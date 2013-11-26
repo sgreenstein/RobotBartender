@@ -1,28 +1,21 @@
 class Ingredient:
     """A liquid ingredient of a mixed drink"""
-    def __init__(self, name, sweetness=0, proof=0, bitterness=0, sourness=0, flavorStrength=0, isCarbonated=False, isCreamy=False):
+    def __init__(self, name, flavs = {}):
         """Returns a new Ingredient instance.
 
         Keyword arguments:
-        name -- string, name of ingredient
-        sweetness -- scale of 0 to 1 (default 0)
-        proof -- 0 to 200 (default 0)
-        bitterness -- scale of 0 to 1 (default 0)
-        sourness -- scale of 0 to 1 (default 0)
-        flavorStrength -- how flavorful, scale of 0 to 1 (default 0)
-        isCarbonated -- boolean (default false)
-        isCreamy -- boolean, true for milk, for example (default false)
+        flavs -- dictionary of string keys, the flavors, and number values:
+            name -- string, name of ingredient
+            sweetness -- scale of 0 to 1 (default 0)
+            proof -- 0 to 200 (default 0)
+            bitterness -- scale of 0 to 1 (default 0)
+            sourness -- scale of 0 to 1 (default 0)
+            flavorStrength -- how flavorful in general, scale of 0 to 1 (default 0)
+            carbonation -- scale of 0 to 1 (default 0)
+            creaminess -- scale of 0 to 1 (default 0)
         """
-        
-        #set attributes
         self.name = name
-        self.sweetness = sweetness
-        self.proof = proof
-        self.bitterness = bitterness
-        self.sourness = sourness
-        self.flavorStrength = flavorStrength
-        self.isCarbonated = isCarbonated
-        self.isCreamy = isCreamy
+        self.flavors = flavs      
     
     def add(self, amnt):
         """Print the adding of an ingredient
@@ -31,3 +24,34 @@ class Ingredient:
         amnt -- amount to add, in mL
         """
         print "Adding", amnt, "mL of", self.name
+
+    def getFlavor(self, flavor):
+        """Returns the value of the flavor, 0 if no value
+
+        Keyword arguments:
+        flavor -- string, flavor name
+        """
+        if(self.flavors.has_key(flavor)):
+            return self.flavors[flavor]
+        return 0
+
+    def proof(self):
+        return self.getFlavor("proof")
+
+    def sweetness(self):
+        return self.getFlavor("sweetness")
+
+    def bitterness(self):
+        return self.getFlavor("bitterness")
+
+    def sourness(self):
+        return self.getFlavor("sourness")
+
+    def flavorStrength(self):
+        return self.getFlavor("flavorStrength")
+
+    def carbonation(self):
+        return self.getFlavor("carbonation")
+
+    def creaminess(self):
+        return self.getFlavor("creaminess")
