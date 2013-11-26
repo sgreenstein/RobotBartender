@@ -1,4 +1,33 @@
+import urllib2
+import urllib
+import time
+import os
+import sys
+import ingredient
+import drink
+
+def speak(text='hello', lang='en', fname='result.wav', player='mplayer'):
+    """ Send text to Google's text to speech service
+    and returns created speech (wav file). """
+
+    limit = min(100, len(text))#100 characters is the current limit.
+    text = text[0:limit]
+    print "Text to speech:", text
+    url = "http://translate.google.com/translate_tts"
+    values = urllib.urlencode({"q": text, "textlen": len(text), "tl": lang})
+    hrs = {"User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7"}
+    #TODO catch exceptions
+    req = urllib2.Request(url, data=values, headers=hrs)
+    p = urllib2.urlopen(req)
+    f = open(fname, 'wb')
+    f.write(p.read())
+    f.close()
+    print "Speech saved to:", fname
+
 def main():
+    Ingredient = ingredient.Ingredient
+    Drink = drink.Drink
+    
     #Create preset ingredients
     #Alcoholic ingredients
     Rum = Ingredient("Rum", {"sweetness":.2, "proof":80, "flavorStrength":.3})
@@ -48,6 +77,7 @@ def main():
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
 
+    speak("Making a" . RumAndCoke.name)
     RumAndCoke.make()
     RumAndCoke.alterRecipe("carbonation", .2)
     RumAndCoke.make()
