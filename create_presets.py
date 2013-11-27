@@ -77,7 +77,7 @@ def main():
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
 
-    speak("Making a " + RumAndCoke.name)
+    speak("Making a" . RumAndCoke.name)
     RumAndCoke.make()
     RumAndCoke.alterRecipe("carbonation", .2)
     RumAndCoke.make()
