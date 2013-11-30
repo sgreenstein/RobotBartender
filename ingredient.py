@@ -10,13 +10,13 @@ class Ingredient:
             proof -- 0 to 200 (default 0)
             bitterness -- scale of 0 to 1 (default 0)
             sourness -- scale of 0 to 1 (default 0)
-            flavorStrength -- how flavorful in general, scale of 0 to 1 (default 0)
+            flavor_strength -- how flavorful in general, scale of 0 to 1 (default 0)
             carbonation -- scale of 0 to 1 (default 0)
             creaminess -- scale of 0 to 1 (default 0)
         """
         self.name = name
-        self.flavors = flavs      
-    
+        self.flavors = flavs
+
     def add(self, amnt):
         """Print the adding of an ingredient
 
@@ -25,7 +25,7 @@ class Ingredient:
         """
         print "Adding", amnt, "mL of", self.name
 
-    def getFlavor(self, flavor):
+    def get_flavor(self, flavor):
         """Returns the value of the flavor, 0 if no value
 
         Keyword arguments:
@@ -47,8 +47,8 @@ class Ingredient:
     def sourness(self):
         return self.getFlavor("sourness")
 
-    def flavorStrength(self):
-        return self.getFlavor("flavorStrength")
+    def flavor_strength(self):
+        return self.getFlavor("flavor_strength")
 
     def carbonation(self):
         return self.getFlavor("carbonation")

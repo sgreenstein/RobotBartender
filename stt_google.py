@@ -1,7 +1,9 @@
+# Written by Jeyson Molina 8/30/2012
+# Accessed on GitHub: https://github.com/jeysonmc/python-google-speech-scripts
 import pyaudio
 import wave
 import audioop
-from collections import deque 
+from collections import deque
 import os
 import urllib2
 import urllib
@@ -20,7 +22,7 @@ def listen_for_speech():
     CHANNELS = 1
     RATE = 16000
     THRESHOLD = 180 #The threshold intensity that defines silence signal (lower than).
-    SILENCE_LIMIT = 2 #Silence limit in seconds. The max ammount of seconds where only silence is recorded. When this time passes the recording finishes and the file is delivered.
+    SILENCE_LIMIT = 4 #Silence limit in seconds. The max ammount of seconds where only silence is recorded. When this time passes the recording finishes and the file is delivered.
 
     #open stream
     p = pyaudio.PyAudio()
@@ -31,18 +33,18 @@ def listen_for_speech():
                     input = True,
                     frames_per_buffer = chunk)
 
-    print "* listening. CTRL+C to finish."
+    print "* listening."
     all_m = []
     data = ''
-    SILENCE_LIMIT = 2
     rel = RATE/chunk
     slid_win = deque(maxlen=SILENCE_LIMIT*rel)
     started = False
-    
+
     while (True):
         data = stream.read(chunk)
         slid_win.append (abs(audioop.avg(data, 2)))
-
+        if (not started):
+            slid_win[0] = 181
         if(True in [ x>THRESHOLD for x in slid_win]):
             if(not started):
                 print "starting record"
@@ -52,17 +54,16 @@ def listen_for_speech():
             print "finished"
             #the limit was reached, finish capture and deliver
             filename = save_speech(all_m,p)
-            stt_google_wav(filename)
-            #reset all
-            started = False
-            slid_win = deque(maxlen=SILENCE_LIMIT*rel)
-            all_m= []
-            print "listening ..."
+            return stt_google_wav(filename)
+##            #reset all
+##            started = False
+##            slid_win = deque(maxlen=SILENCE_LIMIT*rel)
+##            all_m= []
+##            print "listening ..."
 
     print "* done recording"
     stream.close()
     p.terminate()
-
 
 def save_speech(data, p):
     filename = 'output_'+str(int(time.time()))
@@ -79,7 +80,9 @@ def save_speech(data, p):
 
 def stt_google_wav(filename):
     #Convert to flac
-    os.system(FLAC_CONV+ filename+'.wav')
+    command =FLAC_CONV+ filename+'.wav'
+    print command
+    os.system(command)
     f = open(filename+'.flac','rb')
     flac_cont = f.read()
     f.close()
@@ -90,12 +93,15 @@ def stt_google_wav(filename):
     hrs = {"User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7",'Content-type': 'audio/x-flac; rate=16000'}
     req = urllib2.Request(googl_speech_url, data=flac_cont, headers=hrs)
     p = urllib2.urlopen(req)
-
-    res = eval(p.read())['hypotheses']
+    try:
+        res = eval(p.read())['hypotheses']
+    except SyntaxError:
+        res = ""
     print res
     map(os.remove, (filename+'.flac', filename+'.wav'))
     return res
 
-FLAC_CONV = 'flac -f ' # We need a WAV to FLAC converter.
+#FLAC_CONV = 'flac -f ' # We need a WAV to FLAC converter. Unix command
+FLAC_CONV = 'flac ' # We need a WAV to FLAC converter. Windows command
 if(__name__ == '__main__'):
     listen_for_speech()

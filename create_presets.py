@@ -5,11 +5,17 @@ import os
 import sys
 import ingredient
 import drink
+import stt_google
+import pyaudio
+import wave
+import pygame
 
-def speak(text='hello', lang='en', fname='result.wav', player='mplayer'):
+def speak(text='hello', lang='en', fname='result_'+str(int(time.time()))+'.mp3', player='mplayer'):
     """ Send text to Google's text to speech service
-    and returns created speech (wav file). """
-
+    and returns created speech (wav file).
+    Written by Jeyson Molina 8/30/2012
+    Accessed on GitHub: https://github.com/jeysonmc/python-google-speech-scripts
+    """
     limit = min(100, len(text))#100 characters is the current limit.
     text = text[0:limit]
     print "Text to speech:", text
@@ -17,17 +23,27 @@ def speak(text='hello', lang='en', fname='result.wav', player='mplayer'):
     values = urllib.urlencode({"q": text, "textlen": len(text), "tl": lang})
     hrs = {"User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7"}
     #TODO catch exceptions
+
     req = urllib2.Request(url, data=values, headers=hrs)
     p = urllib2.urlopen(req)
     f = open(fname, 'wb')
     f.write(p.read())
     f.close()
+
     print "Speech saved to:", fname
+    pygame.mixer.init(16000)
+    pygame.mixer.music.load(fname)
+    pygame.mixer.music.play()
+    while (pygame.mixer.music.get_busy()):
+        z=1
+    pygame.mixer.quit()
+    os.remove(fname)
 
 def main():
     Ingredient = ingredient.Ingredient
     Drink = drink.Drink
-    
+    stt = stt_google
+
     #Create preset ingredients
     #Alcoholic ingredients
     Rum = Ingredient("Rum", {"sweetness":.2, "proof":80, "flavorStrength":.3})
@@ -76,10 +92,9 @@ def main():
     MindEraser = Drink("Mind Eraser", {Vodka:1,Kahlua:1,ClubSoda:3})
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
+    speech = stt.listen_for_speech()
+    if (speech):
+        speak("Making a " + speech[0]["utterance"])
 
-    speak("Making a" . RumAndCoke.name)
-    RumAndCoke.make()
-    RumAndCoke.alterRecipe("carbonation", .2)
-    RumAndCoke.make()
 if __name__ == "__main__":
     main()
