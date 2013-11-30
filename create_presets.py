@@ -92,9 +92,11 @@ def main():
     MindEraser = Drink("Mind Eraser", {Vodka:1,Kahlua:1,ClubSoda:3})
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
-    speech = stt.listen_for_speech()
-    if (speech):
-        speak("Making a " + speech[0]["utterance"])
-
+##    speech = stt.listen_for_speech()
+##    if (speech):
+##        speak("Making a " + speech[0]["utterance"])
+    RumAndCoke.make()
+    RumAndCoke.alter_recipe('carbonation', .5)
+    RumAndCoke.make()
 if __name__ == "__main__":
     main()

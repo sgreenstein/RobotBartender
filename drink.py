@@ -12,8 +12,8 @@ class Drink:
         self.ingredients = ings
         #find total number of parts in drink
         self.total_parts = 0
-        for ingredient in self.ingredients:
-            self.total_parts += self.ingredients[ingredient]
+        for ingred_amount in self.ingredients.itervalues():
+            self.total_parts += ingred_amount
         self.total_parts = float(self.total_parts)
 
     def make(self, size = 100):
@@ -23,8 +23,8 @@ class Drink:
         size -- int, size of drink in mL (default 100)
         """
         #add each ingredient
-        for ingredient in self.ingredients:
-            ingredient.add(int((size * self.ingredients[ingredient]) / self.total_parts))
+        for ingredient, ingred_amount in self.ingredients.iteritems():
+            ingredient.add(int((size * ingred_amount) / self.total_parts))
         print "Your", self.name, "is ready."
 
     def alter_recipe(self, flavor, amount):
