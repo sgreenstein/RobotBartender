@@ -13,13 +13,21 @@ import stt_google
 import csv
 
 def main():
+    train_for('GinAndTonic.make()')
+
+def train_for(command):
+    """Records training data and saves it in a csv file
+
+    Keyword arguments:
+    command -- the python command to execute after hearing similar words spoken
+    """
     stt = stt_google
     speech = stt.listen_for_speech()
     csvfile = open('drink_training.csv', 'ab')
     writer = csv.writer(csvfile)
     # record instances until it doesn't interpret any text
     while(speech):
-        hypotheses = ['GinAndTonic.make()']
+        hypotheses = [command]
         for hypothesis in speech:
             hypotheses.append(hypothesis['utterance'])
         #print hypotheses
