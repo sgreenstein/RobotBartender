@@ -18,7 +18,7 @@ class Ingredient:
         self.flavors = flavs
 
     def add(self, amnt):
-        """Print the adding of an ingredient
+        """Returns a string detailing the adding of an ingredient
 
         Keyword arguments:
         amnt -- amount to add, in mL

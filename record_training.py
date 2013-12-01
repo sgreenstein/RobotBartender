@@ -13,7 +13,7 @@ import stt_google
 import csv
 
 def main():
-    train_for('GinAndTonic.make()')
+    train_for('MindEraser.make()')
 
 def train_for(command):
     """Records training data and saves it in a csv file

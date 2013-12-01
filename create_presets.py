@@ -9,8 +9,10 @@ import stt_google
 import pyaudio
 import wave
 import pygame
+import similar_words
 
-def speak(text='hello', lang='en', fname='result_'+str(int(time.time()))+'.mp3', player='mplayer'):
+def speak(text='hello', lang='en', fname='result.mp3', player='mplayer'):
+##    fname='result_'+str(int(time.time()))+'.mp3'
     """ Send text to Google's text to speech service
     and returns created speech (wav file).
     Written by Jeyson Molina 8/30/2012
@@ -26,18 +28,15 @@ def speak(text='hello', lang='en', fname='result_'+str(int(time.time()))+'.mp3',
 
     req = urllib2.Request(url, data=values, headers=hrs)
     p = urllib2.urlopen(req)
-    f = open(fname, 'wb')
-    f.write(p.read())
-    f.close()
-
-    print "Speech saved to:", fname
-    pygame.mixer.init(16000)
-    pygame.mixer.music.load(fname)
-    pygame.mixer.music.play()
-    while (pygame.mixer.music.get_busy()):
-        z=1
-    pygame.mixer.quit()
-    os.remove(fname)
+    with open(fname, 'wb') as f:
+        f.write(p.read())
+##    print "Speech saved to:", fname
+    with open(fname, 'rb') as f:
+        pygame.mixer.init(16000)
+        pygame.mixer.music.load(f)
+        pygame.mixer.music.play()
+        while (pygame.mixer.music.get_busy()):
+            pass
 
 def main():
     Ingredient = ingredient.Ingredient
@@ -92,11 +91,39 @@ def main():
     MindEraser = Drink("Mind Eraser", {Vodka:1,Kahlua:1,ClubSoda:3})
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
+
+    #Create preset drink dictionary
+    drinks = {RumAndCoke.name:RumAndCoke,
+        GinAndTonic.name:GinAndTonic,
+        WhiteRussian.name:WhiteRussian,
+        Piscola.name:Piscola,
+        ShirleyTemple.name:ShirleyTemple,
+        Margarita.name:Margarita,
+        Mojito.name:Mojito,
+        MintJulep.name:MintJulep,
+        Screwdriver.name:Screwdriver,
+        WhiskeySour.name:WhiskeySour,
+        ElectricLemonade.name:ElectricLemonade,
+        OldFashioned.name:OldFashioned,
+        TequilaSunrise.name:TequilaSunrise,
+        MindEraser.name:MindEraser,
+        LongIslandIcedTea.name:LongIslandIcedTea,
+        RoyRogers.name:RoyRogers
+        }
 ##    speech = stt.listen_for_speech()
 ##    if (speech):
 ##        speak("Making a " + speech[0]["utterance"])
-    RumAndCoke.make()
-    RumAndCoke.alter_recipe('carbonation', .5)
-    RumAndCoke.make()
+    sim = similar_words.SimilarWords('drink_training.csv')
+    speak("What can I get for you?")
+    speech = stt.listen_for_speech()
+    print speech
+    while(not speech):
+        speak("I didn't hear you. What would you like?")
+        speech = stt.listen_for_speech()
+    drinkname = sim.classify(speech)
+    if(drinkname):
+##        speak(drinks(drinkname).make())
+        eval(drinkname)
+
 if __name__ == "__main__":
     main()

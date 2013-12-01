@@ -11,21 +11,26 @@ class Drink:
         self.name = name
         self.ingredients = ings
         #find total number of parts in drink
-        self.total_parts = 0
+        self._total_parts = 0
         for ingred_amount in self.ingredients.itervalues():
-            self.total_parts += ingred_amount
-        self.total_parts = float(self.total_parts)
+            self._total_parts += ingred_amount
+        self._total_parts = float(self._total_parts)
+        self._default_size = 100
 
-    def make(self, size = 100):
+    def make(self, size = -1):
         """Print the actions of making a drink
 
         Keyword arguments:
         size -- int, size of drink in mL (default 100)
         """
+        #set size
+        if (size == -1):
+            size = self._default_size
         #add each ingredient
+        ingredient_adding = ""
         for ingredient, ingred_amount in self.ingredients.iteritems():
-            ingredient.add(int((size * ingred_amount) / self.total_parts))
-        print "Your", self.name, "is ready."
+            ingredient.add(int((size * ingred_amount) / self._total_parts))
+        print ingredient_adding + "Your", self.name, "is ready."
 
     def alter_recipe(self, flavor, amount):
         """Alter the ingredient ratios to increase or decrease a flavor
@@ -44,7 +49,7 @@ class Drink:
         level = 0
         for ingredient in self.ingredients:
             level += ingredient.get_flavor(flavor) * self.ingredients[ingredient]
-        level /= self.total_parts
+        level /= self._total_parts
         for ingredient in self.ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
@@ -55,3 +60,11 @@ class Drink:
             else:
                 changing = "Decreasing"
             print changing, "the amount of", ingredient.name
+
+    def alter_size(self, amount):
+        """Alter the default drink size
+
+        Keyword arguments:
+        amount -- fraction of previous size to make the new size
+        """
+        self._default_size *= amount

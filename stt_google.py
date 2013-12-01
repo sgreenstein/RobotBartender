@@ -26,13 +26,11 @@ def listen_for_speech():
 
     #open stream
     p = pyaudio.PyAudio()
-
     stream = p.open(format = FORMAT,
                     channels = CHANNELS,
                     rate = RATE,
                     input = True,
                     frames_per_buffer = chunk)
-
     print "* listening."
     all_m = []
     data = ''
@@ -54,17 +52,15 @@ def listen_for_speech():
             print "finished"
             #the limit was reached, finish capture and deliver
             filename = save_speech(all_m,p)
-            return stt_google_wav(filename)
 ##            #reset all
 ##            started = False
 ##            slid_win = deque(maxlen=SILENCE_LIMIT*rel)
 ##            all_m= []
 ##            print "listening ..."
-
-    print "* done recording"
-    stream.close()
-    p.terminate()
-
+            print "* done recording"
+            stream.close()
+            p.terminate()
+            return stt_google_wav(filename)
 def save_speech(data, p):
     filename = 'output_'+str(int(time.time()))
     # write data to WAVE file
