@@ -7,7 +7,7 @@ class Ingredient:
         flavs -- dictionary of string keys, the flavors, and number values:
             name -- string, name of ingredient
             sweetness -- scale of 0 to 1 (default 0)
-            proof -- 0 to 200 (default 0)
+            alcohol -- proof, 0 to 200 (default 0)
             bitterness -- scale of 0 to 1 (default 0)
             sourness -- scale of 0 to 1 (default 0)
             flavor_strength -- how flavorful in general, scale of 0 to 1 (default 0)
@@ -16,6 +16,11 @@ class Ingredient:
         """
         self.name = name
         self.flavors = flavs
+
+    @staticmethod
+    def flavorlist():
+        return ['name', 'sweetness', 'alcohol', 'bitterness', 'sourness',
+            'flavor_strength', 'carbonation', 'creaminess']
 
     def add(self, amnt):
         """Returns a string detailing the adding of an ingredient
@@ -35,8 +40,8 @@ class Ingredient:
             return self.flavors[flavor]
         return 0
 
-    def proof(self):
-        return self.getFlavor("proof")
+    def alcohol(self):
+        return self.getFlavor("alcohol")
 
     def sweetness(self):
         return self.getFlavor("sweetness")

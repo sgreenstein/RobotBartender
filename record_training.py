@@ -13,7 +13,7 @@ import stt_google
 import csv
 
 def main():
-    train_for('MindEraser.make()')
+    train_for('Electric Lemonade')
 
 def train_for(command):
     """Records training data and saves it in a csv file

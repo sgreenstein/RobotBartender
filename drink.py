@@ -17,6 +17,10 @@ class Drink:
         self._total_parts = float(self._total_parts)
         self._default_size = 100
 
+##    @staticmethod
+##    def flavorlist():
+##        return Ingredient.flavorlist()
+
     def make(self, size = -1):
         """Print the actions of making a drink
 
@@ -33,23 +37,26 @@ class Drink:
         print ingredient_adding + "Your", self.name, "is ready."
 
     def alter_recipe(self, flavor, amount):
-        """Alter the ingredient ratios to increase or decrease a flavor
+        """Alter the ingredient ratios to increase or decrease a flavor.
+        Returns true if successful
 
         Keyword arguments:
         flavor -- string, the name of the flavor to alter
         amount -- how much to alter it. Range -1 (less) to 1 (more)
         """
+        #find the current level of that flavor
+        level = 0
+        for ingredient in self.ingredients:
+            level += ingredient.get_flavor(flavor) * self.ingredients[ingredient]
+        level /= self._total_parts
+        if(not level):
+            return False
         #print what we're doing
         if amount > 0:
             changing = "Increasing"
         else:
             changing = "Decreasing"
         print changing, "the", flavor, "of the", self.name
-        #find the current flavor level
-        level = 0
-        for ingredient in self.ingredients:
-            level += ingredient.get_flavor(flavor) * self.ingredients[ingredient]
-        level /= self._total_parts
         for ingredient in self.ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
@@ -60,6 +67,7 @@ class Drink:
             else:
                 changing = "Decreasing"
             print changing, "the amount of", ingredient.name
+        return True
 
     def alter_size(self, amount):
         """Alter the default drink size

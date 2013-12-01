@@ -71,9 +71,9 @@ class SimilarWords:
             instances[label] = word_freqs
             if(label=='RumAndCoke.make()'):
                 print word_freqs
-        #convert from total to three times the average
+        #convert from total to four times the average
         for word in avg_word_freqs:
-            avg_word_freqs[word] *= (3 / float(len(instances)))
+            avg_word_freqs[word] *= (4 / float(len(instances)))
         #subtract the average frequency of each word
         for label in instances:
             instances[label] -= avg_word_freqs
@@ -82,30 +82,53 @@ class SimilarWords:
         self.instances = instances
 
 
-    def classify(self, hypotheses):
-        """Finds the best label based on word frequencies
+    def classify(self, hypotheses, threshold = 0.5):
+        """Returns the best label based on word frequencies
+        or empty string if confidence doesn't exceed threshhold
 
         Keyword arguments:
         hypotheses -- result from Google stt to classify
+        threshold -- similarity threshold necessary to return a label (default 0.5)
         """
-        bestSimilarity= 0
+        bestsimilarity = 0
         for label, word_freqs in self.instances.iteritems():
+##            print label
             similarity = 0
-            print label
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']
                 for word in phrase.split():
                     similarity += word_freqs[word] / float(index + 1)
                     if(word_freqs[word] / float(index + 1) > 0):
                         print word, word_freqs[word]
-            if similarity >= bestSimilarity:
-                bestSimilarity = similarity
-                bestLabel = label
+            if similarity >= bestsimilarity:
+                bestsimilarity = similarity
+                bestlabel = label
+            print label, "\t", similarity
+        if(bestsimilarity >= threshold):
+            return bestlabel
+        else:
+            return ''
 
-            print word_freqs
-            print similarity
-        return bestLabel
-
+##    def regress(self, hypotheses):
+##        """Finds the best label based on word frequencies.
+##        Label is a numeric, continuous data type, not discrete
+##
+##        Keyword arguments:
+##        hypotheses -- result from Google stt to classify
+##        """
+##        bestlabel = 0
+##        for label, word_freqs in self.instances.iteritems():
+##            print label
+##            similarity = 0
+##            for index, hypothesis in enumerate(hypotheses):
+##                phrase = hypothesis['utterance']
+##                for word in phrase.split():
+##                    similarity += word_freqs[word] / float(index + 1)
+##                    if(word_freqs[word] / float(index + 1) > 0):
+##                        print word, word_freqs[word]
+##            bestlabel += float(label) * similarity
+##        print similarity
+##        return bestlabel
 ##def main():
 ##    stt = stt_google
 ##    sim = SimilarWords('drink_training.csv')

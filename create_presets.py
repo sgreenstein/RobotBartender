@@ -45,22 +45,22 @@ def main():
 
     #Create preset ingredients
     #Alcoholic ingredients
-    Rum = Ingredient("Rum", {"sweetness":.2, "proof":80, "flavorStrength":.3})
-    Gin = Ingredient("Gin", {"proof":100, "flavorStrength":1})
-    Whiskey = Ingredient("Whiskey", {"proof":86, "flavorStrength":0.5})
-    Bourbon = Ingredient("Bourbon", {"proof":86, "flavorStrength":0.5})
-    Scotch = Ingredient("Scotch", {"proof":86, "flavorStrength":0.5})
-    Vodka = Ingredient("Vodka", {"proof":80})
-    Tequila = Ingredient("Tequila", {"proof":80, "flavorStrength":0.7})
-    Bitters = Ingredient("Bitters", {"proof":70, "bitterness":.5, "flavorStrength":0.9})
-    Pisco = Ingredient("Pisco", {"proof":70, "sweetness":.2, "flavorStrength":0.5})
+    Rum = Ingredient("Rum", {"sweetness":.2, "alcohol":80, "flavorStrength":.3})
+    Gin = Ingredient("Gin", {"alcohol":100, "flavorStrength":1})
+    Whiskey = Ingredient("Whiskey", {"alcohol":86, "flavorStrength":0.5})
+    Bourbon = Ingredient("Bourbon", {"alcohol":86, "flavorStrength":0.5})
+    Scotch = Ingredient("Scotch", {"alcohol":86, "flavorStrength":0.5})
+    Vodka = Ingredient("Vodka", {"alcohol":80})
+    Tequila = Ingredient("Tequila", {"alcohol":80, "flavorStrength":0.7})
+    Bitters = Ingredient("Bitters", {"alcohol":70, "bitterness":.5, "flavorStrength":0.9})
+    Pisco = Ingredient("Pisco", {"alcohol":70, "sweetness":.2, "flavorStrength":0.5})
 
     #Liqueurs
-    Kahlua = Ingredient("Kahlua", {"proof":40, "sweetness":.5, "flavorStrength":.5, "creaminess":1})
-    IrishCream = Ingredient("Irish cream", {"proof":34, "sweetness":.3, "flavorStrength":.5, "creaminess":1})
-    OrangeLiqueur = Ingredient("Orange liqueur", {"proof":62, "sweetness":.7, "flavorStrength":.6})
-    PeppermintSchnapps = Ingredient("Peppermint schnapps", {"proof":50, "sweetness":.7, "flavorStrength":.7})
-    BlueCuracao = Ingredient("Blue curacao", {"proof":48, "sweetness":.8, "flavorStrength":.6})
+    Kahlua = Ingredient("Kahlua", {"alcohol":40, "sweetness":.5, "flavorStrength":.5, "creaminess":1})
+    IrishCream = Ingredient("Irish cream", {"alcohol":34, "sweetness":.3, "flavorStrength":.5, "creaminess":1})
+    OrangeLiqueur = Ingredient("Orange liqueur", {"alcohol":62, "sweetness":.7, "flavorStrength":.6})
+    PeppermintSchnapps = Ingredient("Peppermint schnapps", {"alcohol":50, "sweetness":.7, "flavorStrength":.7})
+    BlueCuracao = Ingredient("Blue curacao", {"alcohol":48, "sweetness":.8, "flavorStrength":.6})
 
     #Nonalcoholic ingredients
     Milk = Ingredient("Milk", {"flavorStrength":.3, "creaminess":1})
@@ -85,7 +85,7 @@ def main():
     MintJulep = Drink("Mint Julep", {Bourbon:4,SimpleSyrup:1}) #mint
     Screwdriver = Drink("Screwdriver", {Vodka:1,OrangeJuice:2})
     WhiskeySour = Drink("Whiskey Sour", {Whiskey:4,SimpleSyrup:3,LemonJuice:3})
-    ElectricLemonade = Drink("Electrice Lemonade", {Rum:3,BlueCuracao:1,SimpleSyrup:3,LemonJuice:3})
+    ElectricLemonade = Drink("Electric Lemonade", {Rum:3,BlueCuracao:1,SimpleSyrup:3,LemonJuice:3})
     OldFashioned = Drink("Old-fashioned", {Whiskey:4,SimpleSyrup:2,Bitters:1})
     TequilaSunrise = Drink("Tequila Sunrise", {Tequila:8,OrangeJuice:12,Grenadine:1})
     MindEraser = Drink("Mind Eraser", {Vodka:1,Kahlua:1,ClubSoda:3})
@@ -110,20 +110,53 @@ def main():
         LongIslandIcedTea.name:LongIslandIcedTea,
         RoyRogers.name:RoyRogers
         }
-##    speech = stt.listen_for_speech()
-##    if (speech):
-##        speak("Making a " + speech[0]["utterance"])
-    sim = similar_words.SimilarWords('drink_training.csv')
-    speak("What can I get for you?")
+    #get instruction and make drink
+    drink_sim = similar_words.SimilarWords('drink_training.csv')
+    speak("What drink should I make you?")
     speech = stt.listen_for_speech()
     print speech
     while(not speech):
-        speak("I didn't hear you. What would you like?")
+        speak("I didn't hear you. What drink would you like?")
         speech = stt.listen_for_speech()
-    drinkname = sim.classify(speech)
-    if(drinkname):
-##        speak(drinks(drinkname).make())
-        eval(drinkname)
+    drinkname = drink_sim.classify(speech)
+    if(not drinkname in drinks):
+        speak("I don't know how to make that.")
+        return
+    drinks[drinkname].make()
+    #get feedback and alter recipe if necessary
+    flavor_sim = similar_words.SimilarWords('flavor_training.csv')
+    amount_sim = similar_words.SimilarWords('amount_training.csv')
+    speak("How did you like your " + drinkname + "?")
+    speech = stt.listen_for_speech()
+    print speech
+    while(not speech):
+        speak("I didn't hear you. How was your " + drinkname + "?")
+        speech = stt.listen_for_speech()
+    flavor = flavor_sim.classify(speech)
+    if(flavor in Ingredient.flavorlist()):
+        amount = amount_sim.classify(speech)
+        print "Flavor:", flavor
+        print "Amount:", amount
+        if drinks[drinkname].alter_recipe(flavor, float(amount)):
+            if(float(amount) > 0):
+                change = "more"
+            else:
+                change = "less"
+##            if(abs(float(amount)) > 0.1):
+##                change = "much " + change
+            speak("Next time your " + drinkname + " will have " + change + " " + flavor)
+        else:
+            if(drinkname[0].lower() in ['a', 'e', 'i', 'o', 'u']):
+                article = 'an'
+            else:
+                article = 'a'
+            speak("That's not possible. Nothing in " + article + ' ' + drinkname + " has any " + flavor)
+    elif(flavor == 'bad'):
+        speak("I'm sorry you didn't like it.")
+    elif(flavor == 'good'):
+        speak("I'm glad you liked it!")
+    else:
+        speak("I didn't understand that, sorry.")
 
 if __name__ == "__main__":
     main()
