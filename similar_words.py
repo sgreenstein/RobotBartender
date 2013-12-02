@@ -97,13 +97,16 @@ class SimilarWords:
         threshold -- similarity threshold necessary to return a label (default 0.5)
         """
         bestsimilarity = 0
+        #calculate each label's similarity with the interpeted text
         for label, word_freqs in self.instances.iteritems():
-##            print label
             similarity = 0
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']
                 for word in phrase.split():
+                    #if words match, increase similarity score
+                    #weight by the order google guessed them in
                     similarity += word_freqs[word] / float(index + 1)
+                    #print matching words
                     if(word_freqs[word] / float(index + 1) > 0):
                         print word, word_freqs[word]
             if similarity >= bestsimilarity:
@@ -113,32 +116,5 @@ class SimilarWords:
         if(bestsimilarity >= threshold):
             return bestlabel
         else:
+            #nothing matched with sufficient confidence
             return ''
-
-##    def regress(self, hypotheses):
-##        """Finds the best label based on word frequencies.
-##        Label is a numeric, continuous data type, not discrete
-##
-##        Keyword arguments:
-##        hypotheses -- result from Google stt to classify
-##        """
-##        bestlabel = 0
-##        for label, word_freqs in self.instances.iteritems():
-##            print label
-##            similarity = 0
-##            for index, hypothesis in enumerate(hypotheses):
-##                phrase = hypothesis['utterance']
-##                for word in phrase.split():
-##                    similarity += word_freqs[word] / float(index + 1)
-##                    if(word_freqs[word] / float(index + 1) > 0):
-##                        print word, word_freqs[word]
-##            bestlabel += float(label) * similarity
-##        print similarity
-##        return bestlabel
-##def main():
-##    stt = stt_google
-##    sim = SimilarWords('drink_training.csv')
-##    print sim.classify(stt.listen_for_speech())
-##
-##if __name__ == "__main__":
-##    main()

@@ -11,30 +11,38 @@ import wave
 import pygame
 import similar_words
 
-def speak(text='hello', lang='en', fname='result.mp3', player='mplayer'):
-##    fname='result_'+str(int(time.time()))+'.mp3'
-    """ Send text to Google's text to speech service
+def speak(text='hello', lang='en', fname='result.mp3'):
+    """Send text to Google's text to speech service, plays result
     and returns created speech (wav file).
+
+    Keyword arguments:
+    text -- string of the text to say
+    lang -- language (default en)
+    fname -- filename of resulting sound (default result.mp3)
+    
     Written by Jeyson Molina 8/30/2012
     Accessed on GitHub: https://github.com/jeysonmc/python-google-speech-scripts
+    Altered by Seth Greenstein
     """
+    #set up url parameters
     limit = min(100, len(text))#100 characters is the current limit.
     text = text[0:limit]
     print "Text to speech:", text
     url = "http://translate.google.com/translate_tts"
     values = urllib.urlencode({"q": text, "textlen": len(text), "tl": lang})
     hrs = {"User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7"}
-    #TODO catch exceptions
-
+    #send to google, get result
     req = urllib2.Request(url, data=values, headers=hrs)
     p = urllib2.urlopen(req)
     with open(fname, 'wb') as f:
         f.write(p.read())
 ##    print "Speech saved to:", fname
+    #play sound
     with open(fname, 'rb') as f:
         pygame.mixer.init(16000)
         pygame.mixer.music.load(f)
         pygame.mixer.music.play()
+        #wait for sound to finish playing
         while (pygame.mixer.music.get_busy()):
             pass
 
@@ -132,7 +140,7 @@ def main():
         VodkaTonic.name:VodkaTonic,
         BlackRussian.name:BlackRussian
         }
-    #get instruction and make drink
+    #get instruction
     drink_sim = similar_words.SimilarWords('drink_training.csv')
     speak("What drink should I make you?")
     speech = stt.listen_for_speech()
@@ -144,8 +152,9 @@ def main():
     if(not drinkname in drinks):
         speak("I don't know how to make that.")
         return
+    #make drink
     drinks[drinkname].make()
-    #get feedback and alter recipe if necessary
+    #get feedback about drink
     flavor_sim = similar_words.SimilarWords('flavor_training.csv')
     amount_sim = similar_words.SimilarWords('amount_training.csv', 1)
     speak("How was your " + drinkname + "?")
@@ -155,6 +164,7 @@ def main():
         speak("I didn't hear you. How was your " + drinkname + "?")
         speech = stt.listen_for_speech()
     flavor = flavor_sim.classify(speech, 0.03)
+    #alter drink flavor if necessary
     if(flavor in Ingredient.flavorlist()):
         amount = amount_sim.classify(speech, 0)
         print "Flavor:", flavor
@@ -178,6 +188,7 @@ def main():
     elif(flavor == 'good'):
         speak("I'm glad you liked it!")
     else:
+        #didn't match anything with sufficient confidence
         speak("I don't know what to do with that information.")
 
 if __name__ == "__main__":
