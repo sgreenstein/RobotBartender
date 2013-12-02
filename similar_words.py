@@ -16,16 +16,17 @@ from collections import Counter
 
 class SimilarWords:
 
-    def __init__(self, fname):
+    def __init__(self, fname, penalty = 3):
         """Returns an instance of SimilarWords for finding the best label for a phrase
 
         Keyword arguments:
         fname -- string, specifies csv file of training data
+        penalty -- int, penalty for having the same words in multiple labels (default 3)
         """
         self.instances = {} #dictionary. Key: label, value: Counter of word frequencies
-        self._train(fname)
+        self._train(fname, penalty)
 
-    def _train(self, fname):
+    def _train(self, fname, penalty):
         """Reads a file of training data and creates self.instances for future use
 
         Keyword arguments:
@@ -34,6 +35,7 @@ class SimilarWords:
             label1, hypothesis number one, hypothesis number two,
             label1, hypothesis one,
             label2, hypothesis one, et cetera
+        penalty -- int, penalty for having the same words in multiple labels
         """
         #open file
         csvfile = open(fname, 'rb')
@@ -51,6 +53,10 @@ class SimilarWords:
                 word_freqs = instances[label]
             else:
                 word_freqs = Counter()
+            #if google only guessed one thing, copy that thing
+            if(not row[1]):
+                for i in range(1,5):
+                    row[i] = row[0]
             for index, phrase in enumerate(row):
                 for word in phrase.split():
                     #weight by the order Google guessed it in
@@ -71,9 +77,9 @@ class SimilarWords:
             instances[label] = word_freqs
             if(label=='RumAndCoke.make()'):
                 print word_freqs
-        #convert from total to four times the average
+        #convert from total to a multiple of the average
         for word in avg_word_freqs:
-            avg_word_freqs[word] *= (4 / float(len(instances)))
+            avg_word_freqs[word] *= (penalty / float(len(instances)))
         #subtract the average frequency of each word
         for label in instances:
             instances[label] -= avg_word_freqs
@@ -82,7 +88,7 @@ class SimilarWords:
         self.instances = instances
 
 
-    def classify(self, hypotheses, threshold = 0.5):
+    def classify(self, hypotheses, threshold = 1.5):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold
 

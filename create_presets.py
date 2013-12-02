@@ -91,6 +91,17 @@ def main():
     MindEraser = Drink("Mind Eraser", {Vodka:1,Kahlua:1,ClubSoda:3})
     LongIslandIcedTea = Drink("Long Island Iced Tea", {Vodka:1,Gin:1,Rum:1,OrangeLiqueur:1,Tequila:1,SimpleSyrup:2,LemonJuice:2,Coke:1})
     RoyRogers = Drink("Roy Rogers", {Coke:9,Grenadine:1})
+    ScotchAndSoda = Drink("Scotch and Soda", {Scotch:2,ClubSoda:1})
+    BourbonAndWater = Drink("Bourbon and Water", {Bourbon:2,Water:1})
+    CubaLibre = Drink("Cuba Libre", {Rum:2,Coke:4,LimeJuice:1})
+    PiscoSour = Drink("Pisco Sour", {Pisco:3,LemonJuice:2,LimeJuice:1,Water:3})
+    DarkAndStormy = Drink("Dark and Stormy", {Rum:2, GingerAle:3})
+    GinBuck = Drink("Gin Buck", {Gin:2, GingerAle:3})
+    GinRickey = Drink("Gin Rickey", {Gin:4, LimeJuice:1, ClubSoda:6})
+    TomCollins = Drink("Tom Collins", {Gin:3,LemonJuice:2,SimpleSyrup:1,ClubSoda:4})
+    MoscowMule = Drink("Moscow Mule", {Vodka:2,LimeJuice:1,GingerAle:2})
+    VodkaTonic = Drink("Vodka Tonic", {Vodka:4,ClubSoda:6,LimeJuice:1})
+    BlackRussian = Drink("Black Russian", {Vodka:7,Kahlua:3})
 
     #Create preset drink dictionary
     drinks = {RumAndCoke.name:RumAndCoke,
@@ -108,7 +119,18 @@ def main():
         TequilaSunrise.name:TequilaSunrise,
         MindEraser.name:MindEraser,
         LongIslandIcedTea.name:LongIslandIcedTea,
-        RoyRogers.name:RoyRogers
+        RoyRogers.name:RoyRogers,
+        ScotchAndSoda.name:ScotchAndSoda,
+        BourbonAndWater.name:BourbonAndWater,
+        CubaLibre.name:CubaLibre,
+        PiscoSour.name:PiscoSour,
+        DarkAndStormy.name:DarkAndStormy,
+        GinBuck.name:GinBuck,
+        GinRickey.name:GinRickey,
+        TomCollins.name:TomCollins,
+        MoscowMule.name:MoscowMule,
+        VodkaTonic.name:VodkaTonic,
+        BlackRussian.name:BlackRussian
         }
     #get instruction and make drink
     drink_sim = similar_words.SimilarWords('drink_training.csv')
@@ -125,16 +147,16 @@ def main():
     drinks[drinkname].make()
     #get feedback and alter recipe if necessary
     flavor_sim = similar_words.SimilarWords('flavor_training.csv')
-    amount_sim = similar_words.SimilarWords('amount_training.csv')
-    speak("How did you like your " + drinkname + "?")
+    amount_sim = similar_words.SimilarWords('amount_training.csv', 1)
+    speak("How was your " + drinkname + "?")
     speech = stt.listen_for_speech()
     print speech
     while(not speech):
         speak("I didn't hear you. How was your " + drinkname + "?")
         speech = stt.listen_for_speech()
-    flavor = flavor_sim.classify(speech)
+    flavor = flavor_sim.classify(speech, 0.03)
     if(flavor in Ingredient.flavorlist()):
-        amount = amount_sim.classify(speech)
+        amount = amount_sim.classify(speech, 0)
         print "Flavor:", flavor
         print "Amount:", amount
         if drinks[drinkname].alter_recipe(flavor, float(amount)):
@@ -150,13 +172,13 @@ def main():
                 article = 'an'
             else:
                 article = 'a'
-            speak("That's not possible. Nothing in " + article + ' ' + drinkname + " has any " + flavor)
+            speak("Nothing in " + article + ' ' + drinkname + " has any " + flavor)
     elif(flavor == 'bad'):
         speak("I'm sorry you didn't like it.")
     elif(flavor == 'good'):
         speak("I'm glad you liked it!")
     else:
-        speak("I didn't understand that, sorry.")
+        speak("I don't know what to do with that information.")
 
 if __name__ == "__main__":
     main()
