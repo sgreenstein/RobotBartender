@@ -94,7 +94,7 @@ def main():
     ScotchAndSoda = Drink("Scotch and Soda", {Scotch:2,ClubSoda:1})
     BourbonAndWater = Drink("Bourbon and Water", {Bourbon:2,Water:1})
     CubaLibre = Drink("Cuba Libre", {Rum:2,Coke:4,LimeJuice:1})
-    PiscoSour = Drink("Pisco Sour", {Pisco:3,LemonJuice:2,LimeJuice:1,Water:3})
+    PiscoSour = Drink("Pisco Sour", {Pisco:3,LemonJuice:2,LimeJuice:1,Water:2,SimpleSyrup:1})
     DarkAndStormy = Drink("Dark and Stormy", {Rum:2, GingerAle:3})
     GinBuck = Drink("Gin Buck", {Gin:2, GingerAle:3})
     GinRickey = Drink("Gin Rickey", {Gin:4, LimeJuice:1, ClubSoda:6})
@@ -132,6 +132,7 @@ def main():
         VodkaTonic.name:VodkaTonic,
         BlackRussian.name:BlackRussian
         }
+
     #get instruction and make drink
     drink_sim = similar_words.SimilarWords('drink_training.csv')
     speak("What drink should I make you?")
@@ -145,6 +146,8 @@ def main():
         speak("I don't know how to make that.")
         return
     drinks[drinkname].make()
+    speak("Your " + drinkname + " is ready.")
+    time.sleep(2)
     #get feedback and alter recipe if necessary
     flavor_sim = similar_words.SimilarWords('flavor_training.csv')
     amount_sim = similar_words.SimilarWords('amount_training.csv', 1)
@@ -154,7 +157,7 @@ def main():
     while(not speech):
         speak("I didn't hear you. How was your " + drinkname + "?")
         speech = stt.listen_for_speech()
-    flavor = flavor_sim.classify(speech, 0.03)
+    flavor = flavor_sim.classify(speech, 0.08)
     if(flavor in Ingredient.flavorlist()):
         amount = amount_sim.classify(speech, 0)
         print "Flavor:", flavor

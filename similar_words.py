@@ -68,27 +68,21 @@ class SimilarWords:
         #find total frequencies of words
         avg_word_freqs = Counter()
         for label, word_freqs in instances.iteritems():
-            if(label=='RumAndCoke.make()'):
-                print word_freqs
             for word in word_freqs:
                 #normalize by number of training instances
                 word_freqs[word] /= float(num_training_instances[label])
             avg_word_freqs += word_freqs
             instances[label] = word_freqs
-            if(label=='RumAndCoke.make()'):
-                print word_freqs
         #convert from total to a multiple of the average
         for word in avg_word_freqs:
             avg_word_freqs[word] *= (penalty / float(len(instances)))
         #subtract the average frequency of each word
         for label in instances:
             instances[label] -= avg_word_freqs
-            if(label=='RumAndCoke.make()'):
-                print instances[label]
         self.instances = instances
 
 
-    def classify(self, hypotheses, threshold = 1.5):
+    def classify(self, hypotheses, threshold = 0.5):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold
 
@@ -98,18 +92,21 @@ class SimilarWords:
         """
         bestsimilarity = 0
         for label, word_freqs in self.instances.iteritems():
-##            print label
             similarity = 0
+            matched_words = ""
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']
                 for word in phrase.split():
                     similarity += word_freqs[word] / float(index + 1)
                     if(word_freqs[word] / float(index + 1) > 0):
-                        print word, word_freqs[word]
+                        matched_words += "\t" + word + ' %.2f\n' % word_freqs[word]
             if similarity >= bestsimilarity:
                 bestsimilarity = similarity
                 bestlabel = label
-            print label, "\t", similarity
+            print label, '\t%.2f' % similarity
+            if(matched_words):
+                print matched_words
+        print '\n'
         if(bestsimilarity >= threshold):
             return bestlabel
         else:
