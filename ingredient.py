@@ -1,5 +1,6 @@
 class Ingredient:
     """A liquid ingredient of a mixed drink"""
+    #constructor
     def __init__(self, name, flavs = {}):
         """Returns a new Ingredient instance.
 
@@ -16,12 +17,15 @@ class Ingredient:
         """
         self.name = name
         self.flavors = flavs
-
+        
     @staticmethod
     def flavorlist():
+        """ returns a list of all the flavors an ingredient can have
+        """
         return ['name', 'sweetness', 'alcohol', 'bitterness', 'sourness',
             'flavor_strength', 'carbonation', 'creaminess']
 
+    #methods
     def add(self, amnt):
         """Returns a string detailing the adding of an ingredient
 
@@ -30,6 +34,7 @@ class Ingredient:
         """
         print "Adding", amnt, "mL of", self.name
 
+    #different getters
     def get_flavor(self, flavor):
         """Returns the value of the flavor, 0 if no value
 

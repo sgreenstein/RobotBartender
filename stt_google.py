@@ -49,18 +49,13 @@ def listen_for_speech():
             started = True
             all_m.append(data)
         elif (started==True):
-            print "finished"
             #the limit was reached, finish capture and deliver
             filename = save_speech(all_m,p)
-##            #reset all
-##            started = False
-##            slid_win = deque(maxlen=SILENCE_LIMIT*rel)
-##            all_m= []
-##            print "listening ..."
             print "* done recording"
             stream.close()
             p.terminate()
             return stt_google_wav(filename)
+        
 def save_speech(data, p):
     filename = 'output_'+str(int(time.time()))
     # write data to WAVE file

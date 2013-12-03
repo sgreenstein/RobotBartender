@@ -1,5 +1,6 @@
 class Drink:
     """A mixed drink with a list of ingredients and amounts"""
+    #constructor
     def __init__(self, name, ings):
         """Return a new instance of Drink.
 
@@ -17,10 +18,7 @@ class Drink:
         self._total_parts = float(self._total_parts)
         self._default_size = 100
 
-##    @staticmethod
-##    def flavorlist():
-##        return Ingredient.flavorlist()
-
+    #methods
     def make(self, size = -1):
         """Print the actions of making a drink
 
@@ -31,10 +29,9 @@ class Drink:
         if (size == -1):
             size = self._default_size
         #add each ingredient
-        ingredient_adding = ""
         for ingredient, ingred_amount in self.ingredients.iteritems():
             ingredient.add(int((size * ingred_amount) / self._total_parts))
-        print ingredient_adding + "Your", self.name, "is ready."
+        print "Your", self.name, "is ready."
 
     def alter_recipe(self, flavor, amount):
         """Alter the ingredient ratios to increase or decrease a flavor.

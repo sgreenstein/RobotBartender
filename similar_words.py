@@ -23,11 +23,11 @@ class SimilarWords:
         fname -- string, specifies csv file of training data
         penalty -- int, penalty for having the same words in multiple labels (default 3)
         """
-        self.instances = {} #dictionary. Key: label, value: Counter of word frequencies
+        self._instances = {} #dictionary. Key: label, value: Counter of word frequencies
         self._train(fname, penalty)
 
     def _train(self, fname, penalty):
-        """Reads a file of training data and creates self.instances for future use
+        """Reads a file of training data and creates self._instances for future use
 
         Keyword arguments:
         fname -- string, filename of csv file with training data
@@ -40,7 +40,7 @@ class SimilarWords:
         #open file
         csvfile = open(fname, 'rb')
         reader = csv.reader(csvfile)
-        instances = self.instances
+        instances = self._instances
         num_training_instances = Counter()
         #read file into correct format, counting weighted word frequencies
         for row in reader:
@@ -80,6 +80,9 @@ class SimilarWords:
         for label in instances:
             instances[label] -= avg_word_freqs
         self.instances = instances
+            if(label=='RumAndCoke.make()'):
+                print instances[label]
+        self._instances = instances
 
 
     def classify(self, hypotheses, threshold = 0.5):
@@ -92,12 +95,17 @@ class SimilarWords:
         """
         bestsimilarity = 0
         for label, word_freqs in self.instances.iteritems():
+        #calculate each label's similarity with the interpeted text
+        for label, word_freqs in self._instances.iteritems():
             similarity = 0
             matched_words = ""
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']
                 for word in phrase.split():
+                    #if words match, increase similarity score
+                    #weight by the order google guessed them in
                     similarity += word_freqs[word] / float(index + 1)
+                    #print matching words
                     if(word_freqs[word] / float(index + 1) > 0):
                         matched_words += "\t" + word + ' %.2f\n' % word_freqs[word]
             if similarity >= bestsimilarity:
@@ -110,32 +118,5 @@ class SimilarWords:
         if(bestsimilarity >= threshold):
             return bestlabel
         else:
+            #nothing matched with sufficient confidence
             return ''
-
-##    def regress(self, hypotheses):
-##        """Finds the best label based on word frequencies.
-##        Label is a numeric, continuous data type, not discrete
-##
-##        Keyword arguments:
-##        hypotheses -- result from Google stt to classify
-##        """
-##        bestlabel = 0
-##        for label, word_freqs in self.instances.iteritems():
-##            print label
-##            similarity = 0
-##            for index, hypothesis in enumerate(hypotheses):
-##                phrase = hypothesis['utterance']
-##                for word in phrase.split():
-##                    similarity += word_freqs[word] / float(index + 1)
-##                    if(word_freqs[word] / float(index + 1) > 0):
-##                        print word, word_freqs[word]
-##            bestlabel += float(label) * similarity
-##        print similarity
-##        return bestlabel
-##def main():
-##    stt = stt_google
-##    sim = SimilarWords('drink_training.csv')
-##    print sim.classify(stt.listen_for_speech())
-##
-##if __name__ == "__main__":
-##    main()
