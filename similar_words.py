@@ -23,11 +23,11 @@ class SimilarWords:
         fname -- string, specifies csv file of training data
         penalty -- int, penalty for having the same words in multiple labels (default 3)
         """
-        self.instances = {} #dictionary. Key: label, value: Counter of word frequencies
+        self._instances = {} #dictionary. Key: label, value: Counter of word frequencies
         self._train(fname, penalty)
 
     def _train(self, fname, penalty):
-        """Reads a file of training data and creates self.instances for future use
+        """Reads a file of training data and creates self._instances for future use
 
         Keyword arguments:
         fname -- string, filename of csv file with training data
@@ -40,7 +40,7 @@ class SimilarWords:
         #open file
         csvfile = open(fname, 'rb')
         reader = csv.reader(csvfile)
-        instances = self.instances
+        instances = self._instances
         num_training_instances = Counter()
         #read file into correct format, counting weighted word frequencies
         for row in reader:
@@ -85,7 +85,7 @@ class SimilarWords:
             instances[label] -= avg_word_freqs
             if(label=='RumAndCoke.make()'):
                 print instances[label]
-        self.instances = instances
+        self._instances = instances
 
 
     def classify(self, hypotheses, threshold = 1.5):
@@ -98,7 +98,7 @@ class SimilarWords:
         """
         bestsimilarity = 0
         #calculate each label's similarity with the interpeted text
-        for label, word_freqs in self.instances.iteritems():
+        for label, word_freqs in self._instances.iteritems():
             similarity = 0
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']

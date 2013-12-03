@@ -19,7 +19,7 @@ def speak(text='hello', lang='en', fname='result.mp3'):
     text -- string of the text to say
     lang -- language (default en)
     fname -- filename of resulting sound (default result.mp3)
-    
+
     Written by Jeyson Molina 8/30/2012
     Accessed on GitHub: https://github.com/jeysonmc/python-google-speech-scripts
     Altered by Seth Greenstein
@@ -46,11 +46,9 @@ def speak(text='hello', lang='en', fname='result.mp3'):
         while (pygame.mixer.music.get_busy()):
             pass
 
-def main():
+def getdrinks():
     Ingredient = ingredient.Ingredient
     Drink = drink.Drink
-    stt = stt_google
-
     #Create preset ingredients
     #Alcoholic ingredients
     Rum = Ingredient("Rum", {"sweetness":.2, "alcohol":80, "flavorStrength":.3})
@@ -140,6 +138,12 @@ def main():
         VodkaTonic.name:VodkaTonic,
         BlackRussian.name:BlackRussian
         }
+    return drinks
+
+def main():
+    Ingredient = ingredient.Ingredient
+    stt = stt_google
+
     #get instruction
     drink_sim = similar_words.SimilarWords('drink_training.csv')
     speak("What drink should I make you?")
