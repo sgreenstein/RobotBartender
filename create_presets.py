@@ -51,33 +51,33 @@ def getdrinks():
     Drink = drink.Drink
     #Create preset ingredients
     #Alcoholic ingredients
-    Rum = Ingredient("Rum", {"sweetness":.2, "alcohol":80, "flavorStrength":.3})
-    Gin = Ingredient("Gin", {"alcohol":100, "flavorStrength":1})
-    Whiskey = Ingredient("Whiskey", {"alcohol":86, "flavorStrength":0.5})
-    Bourbon = Ingredient("Bourbon", {"alcohol":86, "flavorStrength":0.5})
-    Scotch = Ingredient("Scotch", {"alcohol":86, "flavorStrength":0.5})
+    Rum = Ingredient("Rum", {"sweetness":.2, "alcohol":80, "flavor_strength":.3})
+    Gin = Ingredient("Gin", {"alcohol":100, "flavor_strength":1})
+    Whiskey = Ingredient("Whiskey", {"alcohol":86, "flavor_strength":0.5})
+    Bourbon = Ingredient("Bourbon", {"alcohol":86, "flavor_strength":0.5})
+    Scotch = Ingredient("Scotch", {"alcohol":86, "flavor_strength":0.5})
     Vodka = Ingredient("Vodka", {"alcohol":80})
-    Tequila = Ingredient("Tequila", {"alcohol":80, "flavorStrength":0.7})
-    Bitters = Ingredient("Bitters", {"alcohol":70, "bitterness":.5, "flavorStrength":0.9})
-    Pisco = Ingredient("Pisco", {"alcohol":70, "sweetness":.2, "flavorStrength":0.5})
+    Tequila = Ingredient("Tequila", {"alcohol":80, "flavor_strength":0.7})
+    Bitters = Ingredient("Bitters", {"alcohol":70, "bitterness":.5, "flavor_strength":0.9})
+    Pisco = Ingredient("Pisco", {"alcohol":70, "sweetness":.2, "flavor_strength":0.5})
 
     #Liqueurs
-    Kahlua = Ingredient("Kahlua", {"alcohol":40, "sweetness":.5, "flavorStrength":.5, "creaminess":1})
-    IrishCream = Ingredient("Irish cream", {"alcohol":34, "sweetness":.3, "flavorStrength":.5, "creaminess":1})
-    OrangeLiqueur = Ingredient("Orange liqueur", {"alcohol":62, "sweetness":.7, "flavorStrength":.6})
-    PeppermintSchnapps = Ingredient("Peppermint schnapps", {"alcohol":50, "sweetness":.7, "flavorStrength":.7})
-    BlueCuracao = Ingredient("Blue curacao", {"alcohol":48, "sweetness":.8, "flavorStrength":.6})
+    Kahlua = Ingredient("Kahlua", {"alcohol":40, "sweetness":.5, "flavor_strength":.5, "creaminess":1})
+    IrishCream = Ingredient("Irish cream", {"alcohol":34, "sweetness":.3, "flavor_strength":.5, "creaminess":1})
+    OrangeLiqueur = Ingredient("Orange liqueur", {"alcohol":62, "sweetness":.7, "flavor_strength":.6})
+    PeppermintSchnapps = Ingredient("Peppermint schnapps", {"alcohol":50, "sweetness":.7, "flavor_strength":.7})
+    BlueCuracao = Ingredient("Blue curacao", {"alcohol":48, "sweetness":.8, "flavor_strength":.6})
 
     #Nonalcoholic ingredients
-    Milk = Ingredient("Milk", {"flavorStrength":.3, "creaminess":1})
-    Coke = Ingredient("Coke", {"sweetness":.6, "flavorStrength":0.5, "carbonation":1})
+    Milk = Ingredient("Milk", {"flavor_strength":.3, "creaminess":1})
+    Coke = Ingredient("Coke", {"sweetness":.6, "flavor_strength":0.5, "carbonation":1})
     ClubSoda = Ingredient("Club soda", {"carbonation":1})
-    LemonJuice = Ingredient("Lemon juice", {"sweetness":.3, "sourness":1, "flavorStrength":.7})
-    LimeJuice = Ingredient("Lime juice", {"sweetness":.3, "sourness":1, "flavorStrength":.7})
-    Grenadine = Ingredient("Grenadine", {"sweetness":1, "flavorStrength":.5})
+    LemonJuice = Ingredient("Lemon juice", {"sweetness":.3, "sourness":1, "flavor_strength":.7})
+    LimeJuice = Ingredient("Lime juice", {"sweetness":.3, "sourness":1, "flavor_strength":.7})
+    Grenadine = Ingredient("Grenadine", {"sweetness":1, "flavor_strength":.5})
     SimpleSyrup = Ingredient("Simple syrup", {"sweetness":1})
-    GingerAle = Ingredient("Ginger ale", {"sweetness":.5, "flavorStrength":.3, "carbonation":1})
-    OrangeJuice = Ingredient("Orange juice", {"sweetness":.2, "sourness ": 0.2, "flavorStrength":.5})
+    GingerAle = Ingredient("Ginger ale", {"sweetness":.5, "flavor_strength":.3, "carbonation":1})
+    OrangeJuice = Ingredient("Orange juice", {"sweetness":.2, "sourness": 0.2, "flavor_strength":.5})
     Water = Ingredient("Water")
 
     #Create preset drinks
@@ -146,8 +146,10 @@ def main():
 
     #get instruction
     drink_sim = similar_words.SimilarWords('drink_training_old.csv')
+    drinks = getdrinks()
     speak("What drink should I make you?")
-    speech = stt.listen_for_speech()
+##    speech = stt.listen_for_speech()
+    speech = [{'utterance':"make me a rum and coke"}]#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     print speech
     while(not speech):
         speak("I didn't hear you. What drink would you like?")

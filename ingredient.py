@@ -1,6 +1,29 @@
 class Ingredient:
     """A liquid ingredient of a mixed drink"""
     #constructor
+    @staticmethod
+    def noun_to_adj(flavors):
+        """converts the noun form of (e.g. sweetness) to the adjective form (e.g. sweet)
+
+        Keyword arguments:
+        flavors -- dictionary with flavor keys or string of a flavor
+        """
+        equivalencies = {'sweetness':'sweet', 'alcohol':'alcoholic', 'bitterness':'bitter', 'sourness':'sour', 'carbonation':'carbonated', 'creaminess':'creamy'}
+        #if it's a string, handle that simple case
+        if(type(flavors) is str):
+            if(flavors in equivalencies):
+                return equivalencies[flavors]
+            else:
+                return flavors
+        #otherwise it's a dictionary, so handle that case
+        newflavors = {}
+        for flavor, value in flavors.iteritems():
+            if(flavor in equivalencies):
+                newflavors[equivalencies[flavor]] = value
+            else:
+                newflavors[flavor] = value
+        return newflavors
+
     def __init__(self, name, flavs = {}):
         """Returns a new Ingredient instance.
 
@@ -16,11 +39,10 @@ class Ingredient:
             creamy -- scale of 0 to 1 (default 0)
         """
         self.name = name
-		flavs = noun_to_adj(flavs)
-		assert flavs.issubset(['name', 'sweet', 'alcoholic', 'bitter', 'sour',
-			'flavor_strength', 'carbonated', 'creamy'])
+        flavs = Ingredient.noun_to_adj(flavs)
+    	assert set(flavs.keys()).issubset(set(['name', 'sweet', 'alcoholic', 'bitter', 'sour', 'flavor_strength', 'carbonated', 'creamy']))
         self.flavors = flavs
-        
+
     @staticmethod
     def flavorlist():
         """ returns a list of all the flavors an ingredient can have
@@ -28,18 +50,8 @@ class Ingredient:
         return ['name', 'sweet', 'alcoholic', 'bitter', 'sour',
             'flavor_strength', 'carbonated', 'creamy']
 
-	@staticmethod
-	def noun_to_adj(flavors):
-		"""converts the noun form of anything in the list (e.g. sweetness)
-		to the adjective form (e.g. sweet)
-		"""
-		equivalencies = {'sweetness':'sweet', 'alcohol':'alcoholic', 'bitterness':'bitter',
-			'sourness':'sour', 'carbonation':'carbonated', 'creaminess':'creamy'}
-		for index, flavor in enumerate(flavors):
-			if flavor in equivalencies:
-				flavors[index] = equivalencies[flavor]
-		return flavors
-		
+
+
     #methods
     def add(self, amnt):
         """Returns a string detailing the adding of an ingredient
@@ -56,7 +68,7 @@ class Ingredient:
         Keyword arguments:
         flavor -- string, flavor name
         """
-		flavor = noun_to_adj(flavor)
+        flavor = Ingredient.noun_to_adj(flavor)
         if(self.flavors.has_key(flavor)):
             return self.flavors[flavor]
         return 0

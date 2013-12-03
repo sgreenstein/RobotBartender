@@ -82,15 +82,20 @@ class SimilarWords:
             instances[label] -= avg_word_freqs
         self._instances = instances
 
-    def classify(self, hypotheses, threshold = 0.5):
+    def classify(self, hypotheses, threshold = 0.5, confirm_cushion = 0.2):
         """Returns the best label based on word frequencies
-        or empty string if confidence doesn't exceed threshhold
+        or empty string if confidence doesn't exceed threshhold.
+        Second return value is boolean indicating whether the result
+        needs to be confirmed or not
 
         Keyword arguments:
         hypotheses -- result from Google stt to classify
         threshold -- similarity threshold necessary to return a label (default 0.5)
+        confirm_cushion -- the fraction higher than average best similarity
+            must be not to have to confirm
         """
         bestsimilarity = 0
+        avgsim = 0
         #calculate each label's similarity with the interpeted text
         for label, word_freqs in self._instances.iteritems():
             similarity = 0
@@ -104,15 +109,23 @@ class SimilarWords:
                     #print matching words
                     if(word_freqs[word] / float(index + 1) > 0):
                         matched_words += "\t" + word + ' %.2f\n' % word_freqs[word]
+            avgsim += similarity
             if similarity >= bestsimilarity:
                 bestsimilarity = similarity
                 bestlabel = label
             print label, '\t%.2f' % similarity
             if(matched_words):
                 print matched_words
+        avgsim /= len(self._instances)
         print ''
+        #if high and close to avg: confirm
+        #if high and far from avg: return
+        #if low: none
+        print "Best sim:", bestsimilarity, "Avg sim:", avgsim
         if(bestsimilarity >= threshold):
-            return bestlabel
+            should_confirm = (bestsimilarity / avgsim < 1 + confirm_cushion)
+            print (bestsimilarity / avgsim < 1 + confirm_cushion)
+            return bestlabel, should_confirm
         else:
             #nothing matched with sufficient confidence
-            return ''
+            return '', False

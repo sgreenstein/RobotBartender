@@ -37,19 +37,21 @@ class ControlFlowHandler:
                 raw_input("Press enter to talk")
             except KeyboardInterrupt:
                 return
-            speech = listen()
+##            speech = listen()
+            speech = [{'utterance': 'make me a strong rum and coke'}]
             if(not speech):
                 speak("I didn't hear you.")
                 continue
-            command = self._commandsim.classify(speech)
-            drink = self._drinksim.classify(speech)
-            flavor = self._flavorsim.classify(speech)
-            amount = self._amountsim.classify(speech)
+            shouldconfirm = [False, False, False, False]
+            command, shouldconfirm[0] = self._commandsim.classify(speech)
+            drink, shouldconfirm[1] = self._drinksim.classify(speech)
+            flavor, shouldconfirm[2] = self._flavorsim.classify(speech)
+            amount, shouldconfirm[3] = self._amountsim.classify(speech)
             if(not command):
                 speak("I didn't understand that.")
                 continue
-##            if(not self.confirm(command, flavor, amount, drink)):
-##                continue
+            if(True in shouldconfirm and not self.confirm(command, flavor, amount, drink)):
+                continue
             if(command=='alter'):
                 if(not drink):
                     drink = lastdrink
@@ -57,6 +59,8 @@ class ControlFlowHandler:
                     drinks[drink].wasgood()
                 elif(flavor == 'bad'):
                     drinks[drink].wasbad()
+                    if drinks[drink].hasfailed():
+                        drinks.pop(drink)
                 else:
                     drinks[drink].alter_recipe(flavor, amount)
             else:
@@ -68,7 +72,7 @@ class ControlFlowHandler:
                         #TODO: make drink with that flavor
                         pass
                     else:
-                        newdrink = createnewdrink() #TODO: change this method call
+##                        newdrink = createnewdrink() #TODO: change this method call
                         drinks[newdrink.name] = newdrink
                         newdrink.make()
                         lastdrink = newdrink.name
@@ -81,14 +85,14 @@ class ControlFlowHandler:
                 drink = 'drink'
                 if(not flavor):
                     flavor = 'new'
-            speak("You want me to make you a " + flavor + ' ' + drink + "?")
+            speak("Do you want me to make you a " + flavor + ' ' + drink + "?")
         else:
             if(drink):
                 if(amount > 0):
                     change = 'more'
                 else:
                     change = 'less'
-                speak("You want to make the " + drink + ' ' + change + ' ' + flavor + "?")
+                speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
         speech = listen()
         confirmation = self._yesnosim.classify(speech)
         if(confirmation == 'yes'):
