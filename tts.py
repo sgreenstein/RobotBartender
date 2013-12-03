@@ -8,6 +8,9 @@
 # Copyright:   (c) someone 2013
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
+import urllib2
+import urllib
+import pygame
 
 def speak(text='hello', lang='en', fname='result.mp3'):
     """Send text to Google's text to speech service, plays result

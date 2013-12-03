@@ -145,7 +145,7 @@ def main():
     stt = stt_google
 
     #get instruction
-    drink_sim = similar_words.SimilarWords('drink_training.csv')
+    drink_sim = similar_words.SimilarWords('drink_training_old.csv')
     speak("What drink should I make you?")
     speech = stt.listen_for_speech()
     print speech
@@ -161,8 +161,8 @@ def main():
     speak("Your " + drinkname + " is ready.")
     time.sleep(2)
     #get feedback and alter recipe if necessary
-    flavor_sim = similar_words.SimilarWords('flavor_training.csv')
-    amount_sim = similar_words.SimilarWords('amount_training.csv', 1)
+    flavor_sim = similar_words.SimilarWords('flavor_training_old.csv')
+    amount_sim = similar_words.SimilarWords('amount_training_old.csv', 1)
     speak("How was your " + drinkname + "?")
     speech = stt.listen_for_speech()
     print speech

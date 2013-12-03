@@ -17,22 +17,26 @@ class ControlFlowHandler:
     def __init__(self):
         self._listen = stt_google.listen_for_speech
         self._speak = tts.speak
-        self._commandsim = similar_words.SimilarWords('command_sim_data.csv')
-        self._flavorsim = similar_words.SimilarWords('flavor_sim_data.csv')
-        self._drinksim = similar_words.SimilarWords('drink_sim_data.csv')
-        self._amountsim = similar_words.SimilarWords('amount_sim_data.csv')
-        self._yesnosim = similar_words.SimilarWords('yesno_sim_data.csv')
+        self._commandsim = similar_words.SimilarWords('command_training.csv')
+        self._flavorsim = similar_words.SimilarWords('flavor_training.csv')
+        self._drinksim = similar_words.SimilarWords('drink_training.csv')
+        self._amountsim = similar_words.SimilarWords('amount_training.csv')
+        self._yesnosim = similar_words.SimilarWords('yesno_training.csv')
         self._drinks = create_presets.getdrinks()
 
     def handle(self):
         speak = self._speak
         listen = self._listen
         drinks = self._drinks
-        drinks = dict(drinks, load_novel_drinks())
+##        drinks = dict(drinks, load_novel_drinks())
         lastDrink = ''
         while(True):
-            while(not buttonPress): #TODO: implement button pressing
-                pass
+##            while(not buttonPress): #TODO: implement button pressing
+##                pass
+            try:
+                raw_input("Press enter to talk")
+            except KeyboardInterrupt:
+                return
             speech = listen()
             if(not speech):
                 speak("I didn't hear you.")
@@ -44,9 +48,18 @@ class ControlFlowHandler:
             if(not command):
                 speak("I didn't understand that.")
                 continue
-            if(not confirm(command, flavor, amount, drink, yesnosim)):
-                continue
-            if(command=='make'):
+##            if(not self.confirm(command, flavor, amount, drink)):
+##                continue
+            if(command=='alter'):
+                if(not drink):
+                    drink = lastdrink
+                if(flavor == 'good'):
+                    drinks[drink].wasgood()
+                elif(flavor == 'bad'):
+                    drinks[drink].wasbad()
+                else:
+                    drinks[drink].alter_recipe(flavor, amount)
+            else:
                 if(drink):
                     drinks[drink].make(flavor)
                     lastdrink = drink
@@ -59,18 +72,8 @@ class ControlFlowHandler:
                         drinks[newdrink.name] = newdrink
                         newdrink.make()
                         lastdrink = newdrink.name
-            else:
-                if(not drink):
-                    drink = lastdrink
-                if(flavor == 'good'):
-                    drinks[drink].wasgood()
-                elif(flavor == 'bad'):
-                    drinks[drink].wasbad()
 
-                else:
-                    drinks[drink].alter_recipe(flavor, amount)
-
-    def confirm(self):
+    def confirm(self, command, flavor, amount, drink):
         speak = self._speak
         listen = self._listen
         if(command == 'make'):
@@ -94,6 +97,7 @@ class ControlFlowHandler:
             return False
 
     def load_novel_drinks(self):
+        pass
         #TODO: open the novel drinks file, read it, return dictionary with
         #keys drink names and values Drink objects
 

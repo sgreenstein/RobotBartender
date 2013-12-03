@@ -21,7 +21,7 @@ class SimilarWords:
 
         Keyword arguments:
         fname -- string, specifies csv file of training data
-        penalty -- int, penalty for having the same words in multiple labels (default 3)
+        penalty -- int, penalty for having the same words in multiple labels (default min(3, number of labels - 1))
         """
         self._instances = {} #dictionary. Key: label, value: Counter of word frequencies
         self._train(fname, penalty)
@@ -67,6 +67,7 @@ class SimilarWords:
         #reduce weight of words common to many labels
         #find total frequencies of words
         avg_word_freqs = Counter()
+        penalty = min(len(instances) - 1, penalty)
         for label, word_freqs in instances.iteritems():
             for word in word_freqs:
                 #normalize by number of training instances
@@ -79,11 +80,7 @@ class SimilarWords:
         #subtract the average frequency of each word
         for label in instances:
             instances[label] -= avg_word_freqs
-        self.instances = instances
-            if(label=='RumAndCoke.make()'):
-                print instances[label]
         self._instances = instances
-
 
     def classify(self, hypotheses, threshold = 0.5):
         """Returns the best label based on word frequencies
@@ -94,7 +91,6 @@ class SimilarWords:
         threshold -- similarity threshold necessary to return a label (default 0.5)
         """
         bestsimilarity = 0
-        for label, word_freqs in self.instances.iteritems():
         #calculate each label's similarity with the interpeted text
         for label, word_freqs in self._instances.iteritems():
             similarity = 0

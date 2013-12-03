@@ -13,10 +13,8 @@ import stt_google
 import csv
 
 def main():
-    train_for('alcohol', '0.1')
-##    train_for('Gin Buck')
+    train_for(['make', 'drink'], ['command_training.csv'])
 def train_for(labels, filenames):
-##def train_for(label):
     """Records training data and saves it in a csv file
 
     Keyword arguments:
@@ -27,21 +25,21 @@ def train_for(labels, filenames):
     csvfiles = []
     writers = []
     for index, filename in enumerate(filenames):
-        csvfiles.append(open(filename, 'ab'))
-        writers.append(csv.writer(csvfile))
+        currfile = open(filename, 'ab')
+        csvfiles.append(currfile)
+        writers.append(csv.writer(currfile))
     # record instances until it doesn't interpret any text
     speech = stt.listen_for_speech()
     while(speech):
-        for label in labels:
-            hypotheses = [label]
-            for hypothesis in speech:
-                hypotheses.append(hypothesis['utterance'])
-            #write hypotheses
-            writer.writerow(hypotheses.insert(0, label))
-            speech = stt.listen_for_speech()
-    csvfile.write('\n')
-    csvfile.close
-    csvfile2.close
+        hypotheses = []
+        for hypothesis in speech:
+            hypotheses.append(hypothesis['utterance'])
+        #write hypotheses
+        for index, label in enumerate(labels):
+            writers[index].writerow([label] + hypotheses)
+        speech = stt.listen_for_speech()
+    for csvfile in csvfiles:
+        csvfile.close
 
 if __name__ == '__main__':
     main()
