@@ -37,8 +37,8 @@ class ControlFlowHandler:
                 raw_input("Press enter to talk")
             except KeyboardInterrupt:
                 return
-##            speech = listen()
-            speech = [{'utterance': 'make me a strong rum and coke'}]
+            speech = listen()
+##            speech = [{'utterance': 'make me a rum and coke'}]
             if(not speech):
                 speak("I didn't hear you.")
                 continue
@@ -50,8 +50,9 @@ class ControlFlowHandler:
             if(not command):
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm and not self.confirm(command, flavor, amount, drink)):
+            if(True in shouldconfirm and (not self.confirm(command, flavor, amount, drink))):
                 continue
+            print "Command:", command, "Drink:", drink, "Flavor:", flavor, "Amount:", amount
             if(command=='alter'):
                 if(not drink):
                     drink = lastdrink
@@ -62,7 +63,10 @@ class ControlFlowHandler:
                     if drinks[drink].hasfailed():
                         drinks.pop(drink)
                 else:
-                    drinks[drink].alter_recipe(flavor, amount)
+                    if(not amount):
+                        speak("I didn't understand that.")
+                        continue
+                    drinks[drink].alter_recipe(flavor, float(amount))
             else:
                 if(drink):
                     drinks[drink].make(flavor)
@@ -93,8 +97,15 @@ class ControlFlowHandler:
                 else:
                     change = 'less'
                 speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
-        speech = listen()
-        confirmation = self._yesnosim.classify(speech)
+        confirmation = ''
+        while(confirmation == ''):
+            speech = listen()
+            while(not speech):
+                speak("I didn't hear you.")
+                speech = listen()
+            confirmation = self._yesnosim.classify(speech)
+            if(confirmation == ''):
+                speak("I didn't understand that")
         if(confirmation == 'yes'):
             return True
         else:

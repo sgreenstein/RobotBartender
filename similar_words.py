@@ -24,6 +24,7 @@ class SimilarWords:
         penalty -- int, penalty for having the same words in multiple labels (default min(3, number of labels - 1))
         """
         self._instances = {} #dictionary. Key: label, value: Counter of word frequencies
+        self._bigram_instances = {} #dictionary. Key: label, value: Counter of bigram frequencies
         self._train(fname, penalty)
 
     def _train(self, fname, penalty):
@@ -41,6 +42,7 @@ class SimilarWords:
         csvfile = open(fname, 'rb')
         reader = csv.reader(csvfile)
         instances = self._instances
+        bi_inst = self._bigram_instances
         num_training_instances = Counter()
         #read file into correct format, counting weighted word frequencies
         for row in reader:
@@ -51,38 +53,56 @@ class SimilarWords:
             num_training_instances[label] += 1
             if(label in instances):
                 word_freqs = instances[label]
+                bi_freqs = bi_inst[label]
             else:
                 word_freqs = Counter()
+                bi_freqs = Counter()
             #if google only guessed one thing, copy that thing
             if(not row[1]):
                 for i in range(1,5):
                     row[i] = row[0]
             for index, phrase in enumerate(row):
+                last_word = ''
                 for word in phrase.split():
                     #weight by the order Google guessed it in
                     #i.e. first guesses weighted more
                     word_freqs[word] += 1 / float(index + 1)
+                    if(last_word != ''):
+                        bi_freqs[last_word + ' ' + word] += 1 / float(index + 1)
+                    last_word = word
                 instances[label] = word_freqs
+                bi_inst[label] = bi_freqs
         csvfile.close
         #reduce weight of words common to many labels
         #find total frequencies of words
         avg_word_freqs = Counter()
+        avg_bi_freqs = Counter()
         penalty = min(len(instances) - 1, penalty)
-        for label, word_freqs in instances.iteritems():
+        for label in instances:
+            word_freqs = instances[label]
+            bi_freqs = bi_inst[label]
             for word in word_freqs:
                 #normalize by number of training instances
                 word_freqs[word] /= float(num_training_instances[label])
+            for bi in bi_freqs:
+                bi_freqs[bi] /= float(num_training_instances[label])
             avg_word_freqs += word_freqs
+            avg_bi_freqs += bi_freqs
             instances[label] = word_freqs
+            bi_inst[label] = bi_freqs
         #convert from total to a multiple of the average
         for word in avg_word_freqs:
             avg_word_freqs[word] *= (penalty / float(len(instances)))
+        for bi in avg_bi_freqs:
+            avg_bi_freqs[bi] *= (penalty / float(len(bi_inst)))
         #subtract the average frequency of each word
         for label in instances:
             instances[label] -= avg_word_freqs
+            bi_inst[label] -= avg_bi_freqs
         self._instances = instances
+        self._bigram_instances = bi_inst
 
-    def classify(self, hypotheses, threshold = 0.5, confirm_cushion = 0.2):
+    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 0.2, bigram_weight = 0.5):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold.
         Second return value is boolean indicating whether the result
@@ -92,39 +112,56 @@ class SimilarWords:
         hypotheses -- result from Google stt to classify
         threshold -- similarity threshold necessary to return a label (default 0.5)
         confirm_cushion -- the fraction higher than average best similarity
-            must be not to have to confirm
+            must be not to have to confirm (default 0.2)
+        bigram_weight -- relative to unigrams, how much bigrams should matter (default 0.5)
         """
         bestsimilarity = 0
-        avgsim = 0
+        bestbisimilarity = 0 #best similarity based on bigrams
+        avgsim = 0 #avg similarity
+        avgbisim = 0 #avg bigram similarity
         #calculate each label's similarity with the interpeted text
-        for label, word_freqs in self._instances.iteritems():
+        for label in self._instances:
+            word_freqs = self._instances[label]
+            bi_freqs = self._bigram_instances[label]
             similarity = 0
+            bisimilarity = 0 #similarity based on bigrams
             matched_words = ""
+            matched_bigrams = ""
             for index, hypothesis in enumerate(hypotheses):
                 phrase = hypothesis['utterance']
+                lastword = ''
                 for word in phrase.split():
                     #if words match, increase similarity score
                     #weight by the order google guessed them in
                     similarity += word_freqs[word] / float(index + 1)
+                    bisimilarity += bi_freqs[lastword + ' ' + word] / float(index + 1)
                     #print matching words
                     if(word_freqs[word] / float(index + 1) > 0):
                         matched_words += "\t" + word + ' %.2f\n' % word_freqs[word]
+                    if(bi_freqs[lastword + ' ' + word] / float(index + 1) > 0):
+                        matched_bigrams += "\t" + lastword + ' ' + word + ' %.2f\n' % bi_freqs[lastword + ' ' + word]
+                    lastword = word
             avgsim += similarity
+            avgbisim += bisimilarity
+
             if similarity >= bestsimilarity:
                 bestsimilarity = similarity
                 bestlabel = label
             print label, '\t%.2f' % similarity
+            print label, '\t%.2f' % bisimilarity
             if(matched_words):
                 print matched_words
+            if(matched_bigrams):
+                print matched_bigrams
         avgsim /= len(self._instances)
+        avgbisim /= len(self._bigram_instances)
         print ''
-        #if high and close to avg: confirm
-        #if high and far from avg: return
-        #if low: none
         print "Best sim:", bestsimilarity, "Avg sim:", avgsim
-        if(bestsimilarity >= threshold):
-            should_confirm = (bestsimilarity / avgsim < 1 + confirm_cushion)
-            print (bestsimilarity / avgsim < 1 + confirm_cushion)
+        print "Best bi sim:", bestbisimilarity, "Avg bi sim:", avgbisim
+        combinedsim = bestsimilarity + bestbisimilarity * bigram_weight
+        if(combinedsim >= threshold):
+            #if bestsim isn't enough higher than the average sim, should confirm
+            should_confirm = (combinedsim / avgsim < 1 + confirm_cushion)
             return bestlabel, should_confirm
         else:
             #nothing matched with sufficient confidence

@@ -1,3 +1,5 @@
+import tts
+
 class Drink:
     """A mixed drink with a list of ingredients and amounts"""
     #constructor
@@ -37,6 +39,8 @@ class Drink:
             ingredients = self.ingredients
         else:
             ingredients = self._altered_ingredients(flavor, 0.1)
+        if(not ingredients):
+            return
         #add each ingredient
         print "Flavor:", flavor, "Ingredients:", ingredients
         for ingredient, ingred_amount in ingredients.iteritems():
@@ -58,6 +62,7 @@ class Drink:
             level += ingredient.flavorvalue(flavor) * num_parts
         level /= self._total_parts
         if(level == 0):
+            self._cannot_alter(flavor)
             return False
         #print what we're doing
         if amount > 0:
@@ -68,6 +73,8 @@ class Drink:
         for ingredient in ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
+            print "Amount:",amount
+            print "Level:",level
             ingredients[ingredient] += amount * ((ingredient.flavorvalue(flavor) - level) / level)
             #print what we did
             if (ingredient.flavorvalue(flavor) - level) * amount > 0:
@@ -76,6 +83,13 @@ class Drink:
                 changing = "Decreasing"
             print changing, "the amount of", ingredient.name
         return ingredients
+
+    def _cannot_alter(self, flavor):
+        if(self.name[0].lower() in ['a', 'e', 'i', 'o', 'u']):
+            article = 'an'
+        else:
+            article = 'a'
+        tts.speak("There are no " + flavor + " ingredients in " + article + ' ' + self.name)
 
     def alter_recipe(self, flavor, amount):
         """Alter the ingredient ratios to increase or decrease a flavor.
