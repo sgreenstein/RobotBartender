@@ -44,22 +44,22 @@ class Drink:
         #find the current level of that flavor
         level = 0
         for ingredient in self.ingredients:
-            level += ingredient.get_flavor(flavor) * self.ingredients[ingredient]
+            level += ingredient.flavorvalue(flavor) * self.ingredients[ingredient]
         level /= self._total_parts
         if(not level):
             return False
         #print what we're doing
         if amount > 0:
-            changing = "Increasing"
+            changing = "more"
         else:
-            changing = "Decreasing"
-        print changing, "the", flavor, "of the", self.name
+            changing = "less"
+        print "Making the", self.name, changing, flavor
         for ingredient in self.ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
-            self.ingredients[ingredient] += amount * ((ingredient.get_flavor(flavor) - level) / level)
+            self.ingredients[ingredient] += amount * ((ingredient.flavorvalue(flavor) - level) / level)
             #print what we did
-            if (ingredient.get_flavor(flavor) - level) * amount > 0:
+            if (ingredient.flavorvalue(flavor) - level) * amount > 0:
                 changing = "Increasing"
             else:
                 changing = "Decreasing"
