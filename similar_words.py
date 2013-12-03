@@ -106,7 +106,7 @@ class SimilarWords:
             print label, '\t%.2f' % similarity
             if(matched_words):
                 print matched_words
-        print '\n'
+        print ''
         if(bestsimilarity >= threshold):
             return bestlabel
         else:

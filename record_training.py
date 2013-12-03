@@ -15,30 +15,30 @@ import csv
 def main():
     train_for('alcohol', '0.1')
 ##    train_for('Gin Buck')
-def train_for(label, label2):
+def train_for(labels, filenames):
 ##def train_for(label):
     """Records training data and saves it in a csv file
 
     Keyword arguments:
-    label -- the python label to associate with the words spoken
+    labels -- list of the python labels to associate with the words spoken
+    filenames -- list of the filenames in which to save training instances
     """
     stt = stt_google
-    speech = stt.listen_for_speech()
-    csvfile = open('flavor_training.csv', 'ab')
-    csvfile2 = open('amount_training.csv', 'ab')
-    writer = csv.writer(csvfile)
-    writer2 = csv.writer(csvfile2)
+    csvfiles = []
+    writers = []
+    for index, filename in enumerate(filenames):
+        csvfiles.append(open(filename, 'ab'))
+        writers.append(csv.writer(csvfile))
     # record instances until it doesn't interpret any text
+    speech = stt.listen_for_speech()
     while(speech):
-        hypotheses = [label]
-        hypotheses2 = [label2]
-        for hypothesis in speech:
-            hypotheses.append(hypothesis['utterance'])
-            hypotheses2.append(hypothesis['utterance'])
-        #print hypotheses
-        writer.writerow(hypotheses)
-        writer2.writerow(hypotheses2)
-        speech = stt.listen_for_speech()
+        for label in labels:
+            hypotheses = [label]
+            for hypothesis in speech:
+                hypotheses.append(hypothesis['utterance'])
+            #write hypotheses
+            writer.writerow(hypotheses.insert(0, label))
+            speech = stt.listen_for_speech()
     csvfile.write('\n')
     csvfile.close
     csvfile2.close

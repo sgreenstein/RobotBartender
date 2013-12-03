@@ -154,9 +154,9 @@ def main():
     speak("How was your " + drinkname + "?")
     speech = stt.listen_for_speech()
     print speech
-    while(not speech):
-        speak("I didn't hear you. How was your " + drinkname + "?")
-        speech = stt.listen_for_speech()
+    speech = stt.listen_for_speech()
+    if(not speech):
+        return
     flavor = flavor_sim.classify(speech, 0.08)
     if(flavor in Ingredient.flavorlist()):
         amount = amount_sim.classify(speech, 0)
