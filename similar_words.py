@@ -110,13 +110,12 @@ class SimilarWords:
 
         Keyword arguments:
         hypotheses -- result from Google stt to classify
-        threshold -- similarity threshold necessary to return a label (default 0.5)
+        threshold -- similarity threshold necessary to return a label (default 0.1)
         confirm_cushion -- the fraction higher than average best similarity
             must be not to have to confirm (default 0.2)
         bigram_weight -- relative to unigrams, how much bigrams should matter (default 0.5)
         """
         bestsimilarity = 0
-        bestbisimilarity = 0 #best similarity based on bigrams
         avgsim = 0 #avg similarity
         avgbisim = 0 #avg bigram similarity
         #calculate each label's similarity with the interpeted text
@@ -143,10 +142,11 @@ class SimilarWords:
                     lastword = word
             avgsim += similarity
             avgbisim += bisimilarity
-
-            if similarity >= bestsimilarity:
-                bestsimilarity = similarity
+            combinedsim = similarity + bisimilarity * bigram_weight
+            if combinedsim >= bestsimilarity:
+                bestsimilarity = combinedsim
                 bestlabel = label
+                print label, 'is the best-----------------------------------'
             print label, '\t%.2f' % similarity
             print label, '\t%.2f' % bisimilarity
             if(matched_words):
@@ -157,14 +157,12 @@ class SimilarWords:
         avgbisim /= len(self._bigram_instances)
         print ''
         print "Best sim:", bestsimilarity, "Avg sim:", avgsim
-        print "Best bi sim:", bestbisimilarity, "Avg bi sim:", avgbisim
-        combinedsim = bestsimilarity + bestbisimilarity * bigram_weight
         if(bestlabel == 'none'):
             #matched to special 'none' label
             return '', False
-        elif(combinedsim >= threshold):
+        elif(bestsimilarity >= threshold):
             #if bestsim isn't enough higher than the average sim, should confirm
-            should_confirm = (combinedsim / avgsim < 1 + confirm_cushion)
+            should_confirm = (bestsimilarity / avgsim < 1 + confirm_cushion)
             return bestlabel, should_confirm
         else:
             #nothing matched with sufficient confidence

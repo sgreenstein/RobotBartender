@@ -47,7 +47,7 @@ class Ingredient:
     def flavorlist():
         """ returns a list of all the flavors an ingredient can have
         """
-        return ['name', 'sweet', 'alcoholic', 'bitter', 'sour',
+        return ['sweet', 'alcoholic', 'bitter', 'sour',
             'flavor_strength', 'carbonated', 'creamy']
 
 

@@ -46,8 +46,8 @@ class ControlFlowHandler:
                 spoken = raw_input("Enter what you would have said:")
             except KeyboardInterrupt:
                 return
-##            speech = listen()
-            speech = [{'utterance': spoken}] #for testing without microphone
+            speech = listen()
+##            speech = [{'utterance': spoken}] #for testing without microphone
             if(not speech):
                 #no input
                 speak("I didn't hear you.")
@@ -60,14 +60,14 @@ class ControlFlowHandler:
             amount, shouldconfirm[3] = self._amountsim.classify(speech)
 
             #perform checks
+            print "Command:", command, "Drink:", drink, "Flavor:", flavor, "Amount:", amount
             if(not command):
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm and (not self._confirm(command, flavor, amount, drink))):
+            if(True in shouldconfirm and (not self._confirm(command, flavor, amount, drink, lastdrink))):
                 #user said no to confirmation
                 continue
-            print "Command:", command, "Drink:", drink, "Flavor:", flavor, "Amount:", amount
 
             #act based on recognized speech
             if(command=='alter'):
@@ -106,7 +106,7 @@ class ControlFlowHandler:
 ##                        newdrink.make()
 ##                        lastdrink = newdrink.name
 
-    def _confirm(self, command, flavor, amount, drink):
+    def _confirm(self, command, flavor, amount, drink, lastdrink):
         """Asks the user to confirm a guessed action
 
         Keyword arguments:
@@ -125,15 +125,16 @@ class ControlFlowHandler:
                     flavor = 'new'
             speak("Do you want me to make you a " + flavor + ' ' + drink + "?")
         else:
-            if(drink):
-                if(flavor == 'bad' or flavor == 'good'):
-                    speak("Did you say that the " + drink + " was " + flavor + "?")
+            if(not drink):
+                drink = lastdrink
+            if(flavor == 'bad' or flavor == 'good'):
+                speak("Did you say that the " + drink + " was " + flavor + "?")
+            else:
+                if(amount > 0):
+                    change = 'more'
                 else:
-                    if(amount > 0):
-                        change = 'more'
-                    else:
-                        change = 'less'
-                    speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
+                    change = 'less'
+                speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
 
         #listen for yes or no
         confirmation = ''
