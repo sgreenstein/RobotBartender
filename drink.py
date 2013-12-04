@@ -1,4 +1,5 @@
 import tts
+from ingredient import Ingredient
 
 class Drink:
     """A mixed drink with a list of ingredients and amounts"""
@@ -21,18 +22,22 @@ class Drink:
         for ingred_amount in self.ingredients.itervalues():
             self._total_parts += ingred_amount
         self._total_parts = float(self._total_parts)
+        #set size
         self._default_size = 100
+        #calculate initial flavor levels
+        self._levels = {} #dictionary of each flavor and its level
+        self._calcflavorlevels()
 
     #methods
-    def make(self, flavor, size = -1):
+    def make(self, flavor = '', size = -1):
         """Print the actions of making a drink
 
         Keyword arguments:
-        flavor -- the flavor this drink should have more of
+        flavor -- the flavor this drink should have more of (default none)
         size -- int, size of drink in mL (default 100)
         """
         #set size
-        if (size == -1):
+        if(size == -1):
             size = self._default_size
         #alter ingredients temporarily if necessary
         if(not flavor):
@@ -42,10 +47,21 @@ class Drink:
         if(not ingredients):
             return
         #add each ingredient
-##        print "Flavor:", flavor, "Ingredients:", ingredients
         for ingredient, ingred_amount in ingredients.iteritems():
             ingredient.add(int((size * ingred_amount) / self._total_parts))
         print "Your", self.name, "is ready."
+
+    def _calcflavorlevels(self):
+        """Calculates the drink's value for each flavor
+        """
+        ingredients = self.ingredients
+        #find the current level of each flavor
+        for flavor in Ingredient.flavorlist():
+            level = 0
+            for ingredient, num_parts in ingredients.iteritems():
+                level += ingredient.flavorvalue(flavor) * num_parts
+            level /= self._total_parts
+            self._levels[flavor] = level
 
     def _altered_ingredients(self, flavor, amount):
         """Returns a dictionary of the ingredients and their parts
@@ -56,11 +72,7 @@ class Drink:
         amount -- how much to alter it. Range -1 (less) to 1 (more)
         """
         ingredients = self.ingredients.copy()
-        #find the current level of that flavor
-        level = 0
-        for ingredient, num_parts in ingredients.iteritems():
-            level += ingredient.flavorvalue(flavor) * num_parts
-        level /= self._total_parts
+        level = self._levels[flavor]
         if(level == 0):
             self._cannot_alter(flavor)
             return False
@@ -82,6 +94,7 @@ class Drink:
             else:
                 changing = "Decreasing"
             print changing, "the amount of", ingredient.name
+        self._calcflavorlevels()
         return ingredients
 
     def _cannot_alter(self, flavor):
@@ -90,6 +103,14 @@ class Drink:
         else:
             article = 'a'
         tts.speak("There are no " + flavor + " ingredients in " + article + ' ' + self.name)
+
+    def level_of(self, flavor):
+        """Returns the level of the specified flavor in this drink
+
+        Keyword arguments:
+        flavor -- string, the name of the flavor whose level to get
+        """
+        return self._levels[flavor]
 
     def alter_recipe(self, flavor, amount):
         """Alter the ingredient ratios to increase or decrease a flavor.

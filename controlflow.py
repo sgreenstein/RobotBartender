@@ -12,6 +12,8 @@ import stt_google
 import tts
 import similar_words
 import create_presets
+from heapq import nlargest
+from random import choice
 
 class ControlFlowHandler:
     """Handles the overall control flow of the robot
@@ -34,7 +36,7 @@ class ControlFlowHandler:
         speak = self._speak
         listen = self._listen
         drinks = self._drinks
-##        drinks = dict(drinks, load_novel_drinks())
+##        drinks = dict(drinks, _load_novel_drinks())
         lastdrink = '' #for altering the most recently-made drink
 
         #keep receiving and processing commands until terminated
@@ -62,7 +64,7 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm and (not self.confirm(command, flavor, amount, drink))):
+            if(True in shouldconfirm and (not self._confirm(command, flavor, amount, drink))):
                 #user said no to confirmation
                 continue
             print "Command:", command, "Drink:", drink, "Flavor:", flavor, "Amount:", amount
@@ -95,8 +97,7 @@ class ControlFlowHandler:
                     lastdrink = drink
                 else:
                     if(flavor):
-                        #TODO: make drink with that flavor
-                        pass
+                        self._randomdrink(flavor).make()
                     else:
                         #no drink or flavor specified. Make something new!
                         print "Made new drink"
@@ -105,7 +106,7 @@ class ControlFlowHandler:
 ##                        newdrink.make()
 ##                        lastdrink = newdrink.name
 
-    def confirm(self, command, flavor, amount, drink):
+    def _confirm(self, command, flavor, amount, drink):
         """Asks the user to confirm a guessed action
 
         Keyword arguments:
@@ -149,7 +150,28 @@ class ControlFlowHandler:
         else:
             return False
 
-    def load_novel_drinks(self):
+    def _randomdrink(self, flavor = 'none'):
+        """returns a random drink from drinks that is in the upper quartile
+        of the specified flavor
+
+        Keyword arguments:
+        flavor -- flavor to make sure the drink has, e.g. 'sweet' (default none)
+        """
+        drinks = self._drinks
+        if(flavor == 'none'):
+            return choice(drinks)
+        #find top few drinks using heap
+        top = nlargest(len(drinks) / 5, drinks, key = lambda k: drinks[k].level_of(flavor))
+        for index, drink in enumerate(top):
+            print index + 1, drinks[drink].name, '\t%.2f' % drinks[drink].level_of(flavor)
+        #return a random drink from the top few
+        selected_drink = drinks[choice(top)]
+        #drink must have at least some of the specified flavor
+        while(selected_drink.level_of(flavor) == 0):
+            selected_drink = drinks[choice(top)]
+        return selected_drink
+
+    def _load_novel_drinks(self):
         """loads the drinks that were previously created by conceptual blending
         and saved to a file
         """
