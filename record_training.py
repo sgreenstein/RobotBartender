@@ -17,9 +17,10 @@ import time
 
 def main():
 ##    train_for(['alter', 'Rum and Coke', 'alcoholic'], ['command_training.csv', 'drink_training.csv', 'flavor_training.csv'])
-    train_many('alter')
+    train_many('make', drinks = create_presets.getdrinks())
+##    train_many('alter', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
 
-def train_many(command, drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist()):
+def train_many(command, drinks = {'no drink':'no drink'}, flavors = ['no flavor']):
     """Records training data for many drinks and flavors and saves it in a csv file
 
     Keyword arguments:
@@ -27,9 +28,18 @@ def train_many(command, drinks = create_presets.getdrinks(), flavors = Ingredien
     drinks -- list of drinks to train for (default all presets)
     flavors -- list of flavor labels to train for (default all)
     """
-    flavors.remove('flavor_strength') #don't need to train for flavor_strength
+    try:
+        flavors.remove('flavor_strength') #don't need to train for flavor_strength
+    except:
+        pass
     stt = stt_google
-    filenames = ['command_training1.csv', 'drink_training1.csv', 'flavor_training1.csv']
+    amounts = ['0.1', '-0.1']
+    filenames = ['command_training1.csv']
+    if (drinks != {'no drink':'no drink'}):
+        filenames.append('drink_training1.csv')
+    if (flavors != ['no flavor']):
+        filenames.append('flavor_training1.csv')
+        print "yes"
     csvfiles = []
     writers = []
     for index, filename in enumerate(filenames):
@@ -40,7 +50,6 @@ def train_many(command, drinks = create_presets.getdrinks(), flavors = Ingredien
         currfile = open('amount_training1.csv', 'ab')
         csvfiles.append(currfile)
         writers.append(csv.writer(currfile))
-        amounts = ['0.1', '-0.1']
     # record instances until it doesn't interpret any text
     has_speech = True
     while(has_speech):
@@ -50,11 +59,20 @@ def train_many(command, drinks = create_presets.getdrinks(), flavors = Ingredien
             for flavor in flavors:
                 if(not has_speech):
                     break
-                if(drinks[drink].level_of(flavor) == 0):
-                    #don't train if it doesn't have the flavor
-                    continue
+                try:
+                    if(drinks[drink].level_of(flavor) == 0):
+                        #don't train if it doesn't have the flavor
+                        continue
+                except:
+                    pass
                 for amount in amounts:
-                    labels = [command, drink, flavor, amount]
+                    labels = [command]
+                    if (drinks != {'no drink':'no drink'}):
+                        labels.append(drink)
+                    if(flavors != ['no flavor']):
+                        labels.append(flavor)
+                    if(command == 'alter'):
+                        labels.append(amount)
                     _print_instructions(command, drink, flavor, amount)
                     speech = stt.listen_for_speech()
                     if(not speech):
@@ -65,9 +83,6 @@ def train_many(command, drinks = create_presets.getdrinks(), flavors = Ingredien
                         hypotheses.append(hypothesis['utterance'])
                     #write hypotheses
                     for index, label in enumerate(labels):
-                        if(label == 'amount'):
-                            if(flavor == 'good' or flavor == 'bad'):
-                                continue
                         writers[index].writerow([label] + hypotheses)
     for csvfile in csvfiles:
         csvfile.close
