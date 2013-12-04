@@ -13,7 +13,7 @@ import stt_google
 import csv
 
 def main():
-    train_for(['make', 'drink'], ['command_training.csv'])
+    train_for(['make', 'Rum and Coke'], ['command_training.csv'])
 def train_for(labels, filenames):
     """Records training data and saves it in a csv file
 

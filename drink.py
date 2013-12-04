@@ -42,7 +42,7 @@ class Drink:
         if(not ingredients):
             return
         #add each ingredient
-        print "Flavor:", flavor, "Ingredients:", ingredients
+##        print "Flavor:", flavor, "Ingredients:", ingredients
         for ingredient, ingred_amount in ingredients.iteritems():
             ingredient.add(int((size * ingred_amount) / self._total_parts))
         print "Your", self.name, "is ready."
@@ -55,7 +55,7 @@ class Drink:
         flavor -- string, the name of the flavor to alter
         amount -- how much to alter it. Range -1 (less) to 1 (more)
         """
-        ingredients = self.ingredients
+        ingredients = self.ingredients.copy()
         #find the current level of that flavor
         level = 0
         for ingredient, num_parts in ingredients.iteritems():

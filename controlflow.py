@@ -14,7 +14,11 @@ import similar_words
 import create_presets
 
 class ControlFlowHandler:
+    """Handles the overall control flow of the robot
+    """
     def __init__(self):
+        """Returns a new control handler object
+        """
         self._listen = stt_google.listen_for_speech
         self._speak = tts.speak
         self._commandsim = similar_words.SimilarWords('command_training.csv')
@@ -25,36 +29,52 @@ class ControlFlowHandler:
         self._drinks = create_presets.getdrinks()
 
     def handle(self):
+        """Handles the overall control flow of the robot
+        """
         speak = self._speak
         listen = self._listen
         drinks = self._drinks
 ##        drinks = dict(drinks, load_novel_drinks())
-        lastDrink = ''
+        lastdrink = '' #for altering the most recently-made drink
+
+        #keep receiving and processing commands until terminated
         while(True):
-##            while(not buttonPress): #TODO: implement button pressing
-##                pass
             try:
-                raw_input("Press enter to talk")
+##                raw_input("Press enter to talk")
+                spoken = raw_input("Enter what you would have said:")
             except KeyboardInterrupt:
                 return
-            speech = listen()
-##            speech = [{'utterance': 'make me a rum and coke'}]
+##            speech = listen()
+            speech = [{'utterance': spoken}] #for testing without microphone
             if(not speech):
+                #no input
                 speak("I didn't hear you.")
                 continue
-            shouldconfirm = [False, False, False, False]
+            shouldconfirm = [False, False, False, False] #true if unsure
+            #recognize speech
             command, shouldconfirm[0] = self._commandsim.classify(speech)
             drink, shouldconfirm[1] = self._drinksim.classify(speech)
             flavor, shouldconfirm[2] = self._flavorsim.classify(speech)
             amount, shouldconfirm[3] = self._amountsim.classify(speech)
+
+            #perform checks
             if(not command):
+                #there must be a command
                 speak("I didn't understand that.")
                 continue
             if(True in shouldconfirm and (not self.confirm(command, flavor, amount, drink))):
+                #user said no to confirmation
                 continue
             print "Command:", command, "Drink:", drink, "Flavor:", flavor, "Amount:", amount
+
+            #act based on recognized speech
             if(command=='alter'):
                 if(not drink):
+                    #no drink specified. They probably meant the last drink,
+                    #unless there was no last drink
+                    if(not lastdrink):
+                        speak("I don't know to which drink you are referring.")
+                        continue
                     drink = lastdrink
                 if(flavor == 'good'):
                     drinks[drink].wasgood()
@@ -64,11 +84,13 @@ class ControlFlowHandler:
                         drinks.pop(drink)
                 else:
                     if(not amount):
+                        #we need an amount to be able to alter the flavor
                         speak("I didn't understand that.")
                         continue
                     drinks[drink].alter_recipe(flavor, float(amount))
-            else:
+            else: #command must be 'make'
                 if(drink):
+                    #a drink is specified. make that drink
                     drinks[drink].make(flavor)
                     lastdrink = drink
                 else:
@@ -76,14 +98,25 @@ class ControlFlowHandler:
                         #TODO: make drink with that flavor
                         pass
                     else:
+                        #no drink or flavor specified. Make something new!
+                        print "Made new drink"
 ##                        newdrink = createnewdrink() #TODO: change this method call
-                        drinks[newdrink.name] = newdrink
-                        newdrink.make()
-                        lastdrink = newdrink.name
+##                        drinks[newdrink.name] = newdrink
+##                        newdrink.make()
+##                        lastdrink = newdrink.name
 
     def confirm(self, command, flavor, amount, drink):
+        """Asks the user to confirm a guessed action
+
+        Keyword arguments:
+        command -- 'make' or 'alter'
+        flavor -- e.g. 'sour' or 'sweet' or 'bad'
+        amount -- 0.1 or -0.1
+        drink -- e.g. 'Rum and Coke'
+        """
         speak = self._speak
         listen = self._listen
+        assert command #no point in confirming if there is no command
         if(command == 'make'):
             if(not drink):
                 drink = 'drink'
@@ -92,11 +125,16 @@ class ControlFlowHandler:
             speak("Do you want me to make you a " + flavor + ' ' + drink + "?")
         else:
             if(drink):
-                if(amount > 0):
-                    change = 'more'
+                if(flavor == 'bad' or flavor == 'good'):
+                    speak("Did you say that the " + drink + " was " + flavor + "?")
                 else:
-                    change = 'less'
-                speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
+                    if(amount > 0):
+                        change = 'more'
+                    else:
+                        change = 'less'
+                    speak("Do you want to make the " + drink + ' ' + change + ' ' + flavor + "?")
+
+        #listen for yes or no
         confirmation = ''
         while(confirmation == ''):
             speech = listen()
@@ -112,6 +150,9 @@ class ControlFlowHandler:
             return False
 
     def load_novel_drinks(self):
+        """loads the drinks that were previously created by conceptual blending
+        and saved to a file
+        """
         pass
         #TODO: open the novel drinks file, read it, return dictionary with
         #keys drink names and values Drink objects

@@ -159,7 +159,10 @@ class SimilarWords:
         print "Best sim:", bestsimilarity, "Avg sim:", avgsim
         print "Best bi sim:", bestbisimilarity, "Avg bi sim:", avgbisim
         combinedsim = bestsimilarity + bestbisimilarity * bigram_weight
-        if(combinedsim >= threshold):
+        if(bestlabel == 'none'):
+            #matched to special 'none' label
+            return '', False
+        elif(combinedsim >= threshold):
             #if bestsim isn't enough higher than the average sim, should confirm
             should_confirm = (combinedsim / avgsim < 1 + confirm_cushion)
             return bestlabel, should_confirm
