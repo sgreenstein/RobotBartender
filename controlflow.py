@@ -25,7 +25,7 @@ class ControlFlowHandler:
         self._speak = tts.speak
         self._commandsim = similar_words.SimilarWords('command_training.csv')
         self._flavorsim = similar_words.SimilarWords('flavor_training.csv')
-        self._drinksim = similar_words.SimilarWords('drink_training.csv')
+        self._drinksim = similar_words.SimilarWords('drink_training.csv', penalty=5)
         self._amountsim = similar_words.SimilarWords('amount_training.csv')
         self._yesnosim = similar_words.SimilarWords('yesno_training.csv')
         self._drinks = create_presets.getdrinks()
@@ -65,9 +65,12 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm and (not self._confirm(command, flavor, amount, drink, lastdrink))):
+            if(True in shouldconfirm):
                 #user said no to confirmation
-                continue
+                if(self._confirm(command, flavor, amount, drink, lastdrink)):
+                    print "Confirmed."
+                else:
+                    continue
 
             #act based on recognized speech
             if(command=='alter'):
@@ -88,7 +91,7 @@ class ControlFlowHandler:
                         speak("Never again will I make a " + drink)
                         drinks.pop(drink)
                 else:
-                    if(not amount):
+                    if(not amount or not flavor):
                         #we need an amount to be able to alter the flavor
                         speak("I didn't understand that.")
                         continue
@@ -100,7 +103,9 @@ class ControlFlowHandler:
                     lastdrink = drink
                 else:
                     if(flavor):
-                        self._randomdrink(flavor).make()
+                        randomdrink = self._randomdrink(flavor)
+                        randomdrink.make()
+                        lastdrink = randomdrink
                     else:
                         #no drink or flavor specified. Make something new!
                         print "Made new drink"
@@ -133,7 +138,7 @@ class ControlFlowHandler:
             if(flavor == 'bad' or flavor == 'good'):
                 speak("Did you say that the " + drink + " was " + flavor + "?")
             else:
-                if(amount > 0):
+                if(float(amount) > 0):
                     change = 'more'
                 else:
                     change = 'less'
@@ -146,7 +151,7 @@ class ControlFlowHandler:
             while(not speech):
                 speak("I didn't hear you.")
                 speech = listen()
-            confirmation = self._yesnosim.classify(speech)
+            confirmation, _ = self._yesnosim.classify(speech)
             if(confirmation == ''):
                 speak("I didn't understand that")
         if(confirmation == 'yes'):
