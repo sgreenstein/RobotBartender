@@ -139,7 +139,7 @@ class Drink:
 
     def wasbad(self):
         self.approval -= 1
-        if hasfailed:
+        if self.hasfailed:
             pass #TODO: delete from file
 
     def wasgood(self):

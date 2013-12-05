@@ -17,10 +17,22 @@ import time
 
 def main():
 ##    train_for(['alter', 'Rum and Coke', 'alcoholic'], ['command_training.csv', 'drink_training.csv', 'flavor_training.csv'])
-    train_many('make', drinks = create_presets.getdrinks())
+    #make me a <drink>
+##    train_many('make', drinks = create_presets.getdrinks())
+    #make me a <flavor> drink
+##    train_many('make', flavors = Ingredient.flavorlist())
+    #make me a <flavor> <drink>
+##    train_many('make', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
+    #that drink was too <flavor>
+##    train_many('alter', flavors = Ingredient.flavorlist())
+    #that <drink> was too <flavor>
 ##    train_many('alter', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
+    #that drink was <bad/good>
+##    train_many('alter', flavors = ['bad', 'good'])
+    #that <drink> was <bad/good>
+    train_many('alter', drinks = create_presets.getdrinks(), flavors = ['bad', 'good'])
 
-def train_many(command, drinks = {'no drink':'no drink'}, flavors = ['no flavor']):
+def train_many(command, drinks = {'none':'none'}, flavors = ['none']):
     """Records training data for many drinks and flavors and saves it in a csv file
 
     Keyword arguments:
@@ -34,19 +46,18 @@ def train_many(command, drinks = {'no drink':'no drink'}, flavors = ['no flavor'
         pass
     stt = stt_google
     amounts = ['0.1', '-0.1']
-    filenames = ['command_training1.csv']
-    if (drinks != {'no drink':'no drink'}):
-        filenames.append('drink_training1.csv')
-    if (flavors != ['no flavor']):
-        filenames.append('flavor_training1.csv')
-        print "yes"
+    filenames = ['command_training1.csv', 'drink_training1.csv', 'flavor_training1.csv']
+##    if (drinks != {'none':'none'}):
+##        filenames.append('drink_training1.csv')
+##    if (flavors != ['none']):
+##        filenames.append('flavor_training1.csv')
     csvfiles = []
     writers = []
     for index, filename in enumerate(filenames):
         currfile = open(filename, 'ab')
         csvfiles.append(currfile)
         writers.append(csv.writer(currfile))
-    if(command == 'alter'):
+    if(command == 'alter' and not ('bad' in flavors) and not ('good' in flavors)):
         currfile = open('amount_training1.csv', 'ab')
         csvfiles.append(currfile)
         writers.append(csv.writer(currfile))
@@ -66,12 +77,12 @@ def train_many(command, drinks = {'no drink':'no drink'}, flavors = ['no flavor'
                 except:
                     pass
                 for amount in amounts:
-                    labels = [command]
-                    if (drinks != {'no drink':'no drink'}):
-                        labels.append(drink)
-                    if(flavors != ['no flavor']):
-                        labels.append(flavor)
-                    if(command == 'alter'):
+                    labels = [command, drink, flavor]
+##                    if (drinks != {'none':'none'}):
+##                        labels.append(drink)
+##                    if(flavors != ['none']):
+##                        labels.append(flavor)
+                    if(command == 'alter' and not ('bad' in flavors) and not ('good' in flavors)):
                         labels.append(amount)
                     _print_instructions(command, drink, flavor, amount)
                     speech = stt.listen_for_speech()
@@ -91,11 +102,19 @@ def _print_instructions(command, drink, flavor, amount):
     """Prints a message telling the user what to say for training
     """
     if(command == 'alter'):
+        if(drink == 'none'):
+            drink = 'that'
+        if(flavor == 'bad'):
+            print drink, "was", flavor
         if(float(amount) > 0):
             print drink, "wasn't", flavor, 'enough'
         else:
             print drink, "was too", flavor
     else:
+        if(drink == 'none'):
+            drink = 'something'
+        if(flavor == 'none'):
+            flavor = ''
         print "Make", flavor, drink
     time.sleep(0.5)
 

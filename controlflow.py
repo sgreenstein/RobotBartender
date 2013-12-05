@@ -80,9 +80,12 @@ class ControlFlowHandler:
                     drink = lastdrink
                 if(flavor == 'good'):
                     drinks[drink].wasgood()
+                    speak("I'm glad you liked the " + drink)
                 elif(flavor == 'bad'):
                     drinks[drink].wasbad()
+                    speak("I'm sorry you didn't like the " + drink)
                     if drinks[drink].hasfailed():
+                        speak("Never again will I make a " + drink)
                         drinks.pop(drink)
                 else:
                     if(not amount):
