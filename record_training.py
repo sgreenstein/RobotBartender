@@ -28,9 +28,9 @@ def main():
     #that <drink> was too <flavor>
 ##    train_many('alter', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
     #that drink was <bad/good>
-##    train_many('alter', flavors = ['bad', 'good'])
+    train_many('alter', flavors = ['bad', 'good'])
     #that <drink> was <bad/good>
-    train_many('alter', drinks = create_presets.getdrinks(), flavors = ['bad', 'good'])
+##    train_many('alter', drinks = create_presets.getdrinks(), flavors = ['bad', 'good'])
 
 def train_many(command, drinks = {'none':'none'}, flavors = ['none']):
     """Records training data for many drinks and flavors and saves it in a csv file
@@ -46,7 +46,7 @@ def train_many(command, drinks = {'none':'none'}, flavors = ['none']):
         pass
     stt = stt_google
     amounts = ['0.1', '-0.1']
-    filenames = ['command_training1.csv', 'drink_training1.csv', 'flavor_training1.csv']
+    filenames = ['command_training.csv', 'drink_training.csv', 'flavor_training.csv']
 ##    if (drinks != {'none':'none'}):
 ##        filenames.append('drink_training1.csv')
 ##    if (flavors != ['none']):
@@ -58,7 +58,7 @@ def train_many(command, drinks = {'none':'none'}, flavors = ['none']):
         csvfiles.append(currfile)
         writers.append(csv.writer(currfile))
     if(command == 'alter' and not ('bad' in flavors) and not ('good' in flavors)):
-        currfile = open('amount_training1.csv', 'ab')
+        currfile = open('amount_training.csv', 'ab')
         csvfiles.append(currfile)
         writers.append(csv.writer(currfile))
     # record instances until it doesn't interpret any text
@@ -104,12 +104,13 @@ def _print_instructions(command, drink, flavor, amount):
     if(command == 'alter'):
         if(drink == 'none'):
             drink = 'that'
-        if(flavor == 'bad'):
+        if(flavor == 'bad' or flavor == 'good'):
             print drink, "was", flavor
-        if(float(amount) > 0):
-            print drink, "wasn't", flavor, 'enough'
         else:
-            print drink, "was too", flavor
+            if(float(amount) > 0):
+                print drink, "wasn't", flavor, 'enough'
+            else:
+                print drink, "was too", flavor
     else:
         if(drink == 'none'):
             drink = 'something'
