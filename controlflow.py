@@ -25,7 +25,7 @@ class ControlFlowHandler:
         self._speak = tts.speak
         self._commandsim = similar_words.SimilarWords('command_training.csv')
         self._flavorsim = similar_words.SimilarWords('flavor_training.csv')
-        self._drinksim = similar_words.SimilarWords('drink_training.csv', penalty=5)
+        self._drinksim = similar_words.SimilarWords('drink_training.csv', penalty=10)
         self._amountsim = similar_words.SimilarWords('amount_training.csv')
         self._yesnosim = similar_words.SimilarWords('yesno_training.csv')
         self._drinks = create_presets.getdrinks()
@@ -55,7 +55,7 @@ class ControlFlowHandler:
             shouldconfirm = [False, False, False, False] #true if unsure
             #recognize speech
             command, shouldconfirm[0] = self._commandsim.classify(speech)
-            drink, shouldconfirm[1] = self._drinksim.classify(speech)
+            drink, shouldconfirm[1] = self._drinksim.classify(speech, threshold = 0.4)
             flavor, shouldconfirm[2] = self._flavorsim.classify(speech)
             amount, shouldconfirm[3] = self._amountsim.classify(speech)
 
@@ -65,7 +65,7 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm):
+            if(True in shouldconfirm or not drink):
                 #user said no to confirmation
                 if(self._confirm(command, flavor, amount, drink, lastdrink)):
                     print "Confirmed."
@@ -131,6 +131,8 @@ class ControlFlowHandler:
                 drink = 'drink'
                 if(not flavor):
                     flavor = 'new'
+                elif (flavor == 'alcoholic'):
+                    flavor = 'strong'
             speak("Do you want me to make you a " + flavor + ' ' + drink + "?")
         else:
             if(not drink):
@@ -151,7 +153,7 @@ class ControlFlowHandler:
             while(not speech):
                 speak("I didn't hear you.")
                 speech = listen()
-            confirmation, _ = self._yesnosim.classify(speech)
+            confirmation, _ = self._yesnosim.classify(speech, threshold = 0.05)
             if(confirmation == ''):
                 speak("I didn't understand that")
         if(confirmation == 'yes'):

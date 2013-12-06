@@ -86,8 +86,6 @@ class Drink:
         for ingredient in ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
-            print "Amount:",amount
-            print "Level:",level
             ingredients[ingredient] += amount * ((ingredient.flavorvalue(flavor) - level) / level)
             #print what we did
             if (ingredient.flavorvalue(flavor) - level) * amount > 0:
