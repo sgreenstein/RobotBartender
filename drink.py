@@ -15,6 +15,7 @@ class Drink:
         #set attributes
         self.name = name
         self.ingredients = ings
+        self.ingredient_names = ings.keys()
         self.isnovel = isnovel
         self.approval = 0 #changes in wasgood and wasbad methods
         #find total number of parts in drink
