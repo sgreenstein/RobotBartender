@@ -26,7 +26,7 @@ class Drink:
         #set size
         self._default_size = 100
         #calculate initial flavor levels
-        self._levels = {} #dictionary of each flavor and its level
+        self.levels = {} #dictionary of each flavor and its level
         self._calcflavorlevels()
 
     #methods
@@ -62,7 +62,7 @@ class Drink:
             for ingredient, num_parts in ingredients.iteritems():
                 level += ingredient.flavorvalue(flavor) * num_parts
             level /= self._total_parts
-            self._levels[flavor] = level
+            self.levels[flavor] = level
 
     def _altered_ingredients(self, flavor, amount):
         """Returns a dictionary of the ingredients and their parts
@@ -73,7 +73,7 @@ class Drink:
         amount -- how much to alter it. Range -1 (less) to 1 (more)
         """
         ingredients = self.ingredients.copy()
-        level = self._levels[flavor]
+        level = self.levels[flavor]
         if(level == 0):
             self._cannot_alter(flavor)
             return False
@@ -111,7 +111,7 @@ class Drink:
         Keyword arguments:
         flavor -- string, the name of the flavor whose level to get
         """
-        return self._levels[flavor]
+        return self.levels[flavor]
 
     def alter_recipe(self, flavor, amount):
         """Alter the ingredient ratios to increase or decrease a flavor.

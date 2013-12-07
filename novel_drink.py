@@ -16,8 +16,8 @@ class NovelDrink:
 		
 		
 		for drink in drinks:
-			for ing1 in drink.ingredient_names():
-				for ing2 in drink.ingredients_names():
+			for ing1 in drink.ingredient_names:
+				for ing2 in drink.ingredients_names:
 					if ing1!=ing2:
 						adj[ing1][ing2]+=1
 						adj[ing2][ing1]+=1
@@ -29,22 +29,36 @@ class NovelDrink:
 		drink1 = random.choose(self._drinks)
 		for drink2 in drinks:
 			similarity = 0
-			for ingredient1 in drink1.ingredient_names():
-				for ingredient2 in drink2.ingredient_names():
+			for ingredient1 in drink1.ingredient_names:
+				for ingredient2 in drink2.ingredient_names:
 					similarity += adj[ingredient1][ingredient2]
 			if(similarity > bestsim):
 				bestsim = similarity
 				bestdrink = drink2
 				
-		diff = []
-		levels1 = drink1.getflavors()
-		levels2 = drink2.getflavors()
-		for i in levels1:
-			diff[i] = levels1[i] - levels2[i]
-		flav1 = nth_largest(1,diff)
-		flav2 = nth_largest(2,diff)
-		flav3 = nth_largest(3,diff)
+		diff = {}
+		levels1 = drink1.levels
+		levels2 = drink2.levels
+		for flav in Ingredient.flavorlist():
+			if not flav in levels1:
+				try
+					diff[flav] = levels2[flav]
+				except
+					pass
+			else
+				try
+					diff[flav] = abs(levels1[flav] - levels2[flav])
+				except
+					diff[flav] = levels1[flav]
+			
+		flavs = []
+		for i in range(3):
+			flavs.append(nth_largest(i, diff, key = lambda k: diff[k]))
 		
+		for flav in flavs:
+			for ingredient in drink1.ingredient_names:
+				if(ingredient.flavor_value(flav)>0)
+					
 	
 	def nth_largest(n, iter):
 		return heapq.nlargest(n, iter)[-1]
