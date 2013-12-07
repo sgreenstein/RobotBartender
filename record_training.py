@@ -23,12 +23,13 @@ def main():
 ##    train_many('make', flavors = Ingredient.flavorlist())
     #make me a <flavor> <drink>
 ##    train_many('make', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
+    train_many('make', drinks = ['Cuba Libre'], flavors = ['sour'])
     #that drink was too <flavor>
 ##    train_many('alter', flavors = Ingredient.flavorlist())
     #that <drink> was too <flavor>
 ##    train_many('alter', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
     #that drink was <bad/good>
-    train_many('alter', flavors = ['bad', 'good'])
+##    train_many('alter', flavors = ['bad', 'good'])
     #that <drink> was <bad/good>
 ##    train_many('alter', drinks = create_presets.getdrinks(), flavors = ['bad', 'good'])
 

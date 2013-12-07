@@ -102,7 +102,7 @@ class SimilarWords:
         self._instances = instances
         self._bigram_instances = bi_inst
 
-    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 0.6, bigram_weight = 0.5):
+    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 2, bigram_weight = 1):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold.
         Second return value is boolean indicating whether the result
@@ -112,7 +112,7 @@ class SimilarWords:
         hypotheses -- result from Google stt to classify
         threshold -- similarity threshold necessary to return a label (default 0.1)
         confirm_cushion -- the multiple of the average that the best similarity
-            must be to not have to confirm (default 0.6)
+            must be to not have to confirm (default 2)
         bigram_weight -- relative to unigrams, how much bigrams should matter (default 0.5)
         """
         bestsimilarity = 0
