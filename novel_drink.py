@@ -55,10 +55,9 @@ class NovelDrink:
 		for i in range(3):
 			flavs.append(nth_largest(i, diff, key = lambda k: diff[k]))
 		
-		for flav in flavs:
-			for ingredient in drink1.ingredient_names:
-				if(ingredient.flavor_value(flav)>0)
-					
+		print drink2.name
+
+
 	
 	def nth_largest(n, iter):
 		return heapq.nlargest(n, iter)[-1]
