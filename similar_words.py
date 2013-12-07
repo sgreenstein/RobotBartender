@@ -102,7 +102,7 @@ class SimilarWords:
         self._instances = instances
         self._bigram_instances = bi_inst
 
-    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 2, bigram_weight = 1):
+    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 0.5, bigram_weight = 1):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold.
         Second return value is boolean indicating whether the result
@@ -111,13 +111,14 @@ class SimilarWords:
         Keyword arguments:
         hypotheses -- result from Google stt to classify
         threshold -- similarity threshold necessary to return a label (default 0.1)
-        confirm_cushion -- the multiple of the average that the best similarity
-            must be to not have to confirm (default 2)
+        confirm_cushion -- will need confirmation if best similarity is not this many
+            times higher than the second best similarity (default 2)
         bigram_weight -- relative to unigrams, how much bigrams should matter (default 0.5)
         """
         bestsimilarity = 0
-        avgsim = 0 #avg similarity
-        avgbisim = 0 #avg bigram similarity
+        secbestsim = 0
+##        avgsim = 0 #avg similarity
+##        avgbisim = 0 #avg bigram similarity
         #calculate each label's similarity with the interpeted text
         for label in self._instances:
             word_freqs = self._instances[label]
@@ -140,10 +141,11 @@ class SimilarWords:
                     if(bi_freqs[lastword + ' ' + word] / float(index + 1) > 0):
                         matched_bigrams += "\t" + lastword + ' ' + word + ' %.2f\n' % bi_freqs[lastword + ' ' + word]
                     lastword = word
-            avgsim += similarity
-            avgbisim += bisimilarity
+##            avgsim += similarity
+##            avgbisim += bisimilarity
             combinedsim = similarity + bisimilarity * bigram_weight
             if combinedsim >= bestsimilarity:
+                secbestsim = bestsimilarity
                 bestsimilarity = combinedsim
                 bestlabel = label
                 print label, 'is the best-----------------------------------'
@@ -153,16 +155,17 @@ class SimilarWords:
                 print matched_words
             if(matched_bigrams):
                 print matched_bigrams
-        avgsim /= len(self._instances)
-        avgbisim /= len(self._bigram_instances)
+##        avgsim /= len(self._instances)
+##        avgbisim /= len(self._bigram_instances)
         print ''
-        print "Best sim:", bestsimilarity, "Avg sim:", avgsim
+##        print "Best sim:", bestsimilarity, "Avg sim:", avgsim
+        print "Best sim:", bestsimilarity, "2nd best sim:", secbestsim
         if(bestlabel == 'none'):
             #matched to special 'none' label
             return '', False
         elif(bestsimilarity >= threshold):
             #if bestsim isn't enough higher than the average sim, should confirm
-            should_confirm = (bestsimilarity / avgsim < confirm_cushion)
+            should_confirm = (bestsimilarity < secbestsim * confirm_cushion)
             return bestlabel, should_confirm
         else:
             #nothing matched with sufficient confidence
