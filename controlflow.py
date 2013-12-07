@@ -14,6 +14,7 @@ import similar_words
 import create_presets
 from heapq import nlargest
 from random import choice
+from novel_drink import NovelDrink
 
 class ControlFlowHandler:
     """Handles the overall control flow of the robot
@@ -29,6 +30,7 @@ class ControlFlowHandler:
         self._amountsim = similar_words.SimilarWords('amount_training.csv')
         self._yesnosim = similar_words.SimilarWords('yesno_training.csv')
         self._drinks = create_presets.getdrinks()
+        self._novel_drinks = NovelDrink()
 
     def handle(self):
         """Handles the overall control flow of the robot
@@ -46,8 +48,8 @@ class ControlFlowHandler:
                 spoken = raw_input("Enter what you would have said:")
             except KeyboardInterrupt:
                 return
-            speech = listen()
-##            speech = [{'utterance': spoken}] #for testing without microphone
+##            speech = listen()
+            speech = [{'utterance': spoken}] #for testing without microphone
             if(not speech):
                 #no input
                 speak("I didn't hear you.")
@@ -65,7 +67,8 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm or not drink):
+            if(True in shouldconfirm):
+##            if(True in shouldconfirm or not drink):
                 #user said no to confirmation
                 if(self._confirm(command, flavor, amount, drink, lastdrink)):
                     print "Confirmed."
@@ -108,8 +111,8 @@ class ControlFlowHandler:
                         lastdrink = randomdrink
                     else:
                         #no drink or flavor specified. Make something new!
-                        print "Made new drink"
-##                        newdrink = createnewdrink() #TODO: change this method call
+                        print "Making new drink:"
+                        self._novel_drinks.makenovel() #TODO: change this method call
 ##                        drinks[newdrink.name] = newdrink
 ##                        newdrink.make()
 ##                        lastdrink = newdrink.name
@@ -170,7 +173,7 @@ class ControlFlowHandler:
         """
         drinks = self._drinks
         if(flavor == 'none'):
-            return choice(drinks)
+            return choice(drinks.keys())
         #find top few drinks using heap
         top = nlargest(len(drinks) / 5, drinks, key = lambda k: drinks[k].level_of(flavor))
         for index, drink in enumerate(top):

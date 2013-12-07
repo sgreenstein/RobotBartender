@@ -15,14 +15,16 @@ class Drink:
         #set attributes
         self.name = name
         self.ingredients = ings
-        self.ingredient_names = ings.keys()
+        self.ingredient_names = []
+        for ing in ings:
+            self.ingredient_names.append(ing.name)
         self.isnovel = isnovel
         self.approval = 0 #changes in wasgood and wasbad methods
         #find total number of parts in drink
-        self._total_parts = 0
+        self.total_parts = 0
         for ingred_amount in self.ingredients.itervalues():
-            self._total_parts += ingred_amount
-        self._total_parts = float(self._total_parts)
+            self.total_parts += ingred_amount
+        self.total_parts = float(self.total_parts)
         #set size
         self._default_size = 100
         #calculate initial flavor levels
@@ -49,7 +51,7 @@ class Drink:
             return
         #add each ingredient
         for ingredient, ingred_amount in ingredients.iteritems():
-            ingredient.add(int((size * ingred_amount) / self._total_parts))
+            ingredient.add(int((size * ingred_amount) / self.total_parts))
         print "Your", self.name, "is ready."
 
     def _calcflavorlevels(self):
@@ -61,7 +63,7 @@ class Drink:
             level = 0
             for ingredient, num_parts in ingredients.iteritems():
                 level += ingredient.flavorvalue(flavor) * num_parts
-            level /= self._total_parts
+            level /= self.total_parts
             self.levels[flavor] = level
 
     def _altered_ingredients(self, flavor, amount):
