@@ -102,7 +102,7 @@ class SimilarWords:
         self._instances = instances
         self._bigram_instances = bi_inst
 
-    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 0.5, bigram_weight = 1):
+    def classify(self, hypotheses, threshold = 0.2, confirm_cushion = 0.5, bigram_weight = 1.5):
         """Returns the best label based on word frequencies
         or empty string if confidence doesn't exceed threshhold.
         Second return value is boolean indicating whether the result
@@ -143,7 +143,7 @@ class SimilarWords:
                     lastword = word
 ##            avgsim += similarity
 ##            avgbisim += bisimilarity
-            combinedsim = similarity + bisimilarity * bigram_weight
+            combinedsim = 10 * (similarity + bisimilarity * bigram_weight) / (1 + bigram_weight)
             if combinedsim >= bestsimilarity:
                 secbestsim = bestsimilarity
                 bestsimilarity = combinedsim

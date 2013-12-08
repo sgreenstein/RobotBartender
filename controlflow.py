@@ -25,7 +25,7 @@ class ControlFlowHandler:
         self._listen = stt_google.listen_for_speech
         self._speak = tts.speak
         self._commandsim = similar_words.SimilarWords('command_training.csv')
-        self._flavorsim = similar_words.SimilarWords('flavor_training.csv')
+        self._flavorsim = similar_words.SimilarWords('flavor_training.csv', penalty=10)
         self._drinksim = similar_words.SimilarWords('drink_training.csv', penalty=10)
         self._amountsim = similar_words.SimilarWords('amount_training.csv')
         self._yesnosim = similar_words.SimilarWords('yesno_training.csv')
@@ -44,12 +44,12 @@ class ControlFlowHandler:
         #keep receiving and processing commands until terminated
         while(True):
             try:
-##                raw_input("Press enter to talk")
-                spoken = raw_input("Enter what you would have said:")
+                raw_input("Press enter to talk")
+##                spoken = raw_input("Enter what you would have said:")
             except KeyboardInterrupt:
                 return
-##            speech = listen()
-            speech = [{'utterance': spoken}] #for testing without microphone
+            speech = listen()
+##            speech = [{'utterance': spoken}] #for testing without microphone
             if(not speech):
                 #no input
                 speak("I didn't hear you.")
@@ -58,7 +58,7 @@ class ControlFlowHandler:
             #recognize speech
             command, shouldconfirm[0] = self._commandsim.classify(speech)
             drink, shouldconfirm[1] = self._drinksim.classify(speech, threshold = 0.4)
-            flavor, shouldconfirm[2] = self._flavorsim.classify(speech)
+            flavor, shouldconfirm[2] = self._flavorsim.classify(speech, threshold = 0.01)
             amount, shouldconfirm[3] = self._amountsim.classify(speech)
 
             #perform checks
