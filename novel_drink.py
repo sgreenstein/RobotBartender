@@ -31,14 +31,15 @@ class NovelDrink:
         def makenovel(self):
             drinks = self._drinks
             drink1 = drinks[choice(drinks.keys())]
-            print "Drink 1:", drink1.name
             bestsim = 0
+            similarity_list = {}
             for drink2 in drinks.itervalues():
                 similarity = 0
                 for ingredient1 in drink1.ingredient_names:
                     for ingredient2 in drink2.ingredient_names:
                         similarity += self._adj[ingredient1][ingredient2]
                 similarity /= drink2.total_parts
+                similarity_list[drink2.name]=similarity
                 if(similarity > bestsim):
                     bestsim = similarity
                     bestdrink = drink2
@@ -60,13 +61,23 @@ class NovelDrink:
                         diff[flav] = levels1[flav]
 
             flavs = []
-            for i in range(3):
+            for i in range(4):
                 flavs.append(heapq.nlargest(i, diff, key = lambda k: diff[k]))
 
-            print drink1.name
-            print drink2.name
-
-
-
-        def nth_largest(self, n, iter):
-            return heapq.nlargest(n, iter)[-1]
+            new_drink_ings = {}
+            new_drink2_ings = {}
+            for ingredien1,part1 in drink1.ingredients.iteritems():
+                new_drink_ings[ingredien1]=part1
+            for ingredient2,part2 in drink2.ingredients.iteritems():
+                for ingr,part in new_drink_ings.iteritems():
+                    if ingredient2==ingr:
+                        new_drink_ings[ingr]=(part+part2)/2
+                    else:
+                        new_drink2_ings[ingredient2]=part2
+            for ingr,part in new_drink2_ings.iteritems():
+                new_drink_ings[ingr]=part
+            new_drink = Drink("custom_drink",new_drink_ings)
+            print new_drink.name
+            for ingr, part in new_drink.ingredients.iteritems():
+                print ingr.name, part
+            return new_drink
