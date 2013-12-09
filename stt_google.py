@@ -22,7 +22,7 @@ def listen_for_speech():
     CHANNELS = 1
     RATE = 16000
     THRESHOLD = 180 #The threshold intensity that defines silence signal (lower than).
-    SILENCE_LIMIT = 3 #Silence limit in seconds. The max ammount of seconds where only silence is recorded. When this time passes the recording finishes and the file is delivered.
+    SILENCE_LIMIT = 4 #Silence limit in seconds. The max ammount of seconds where only silence is recorded. When this time passes the recording finishes and the file is delivered.
 
     #open stream
     p = pyaudio.PyAudio()
@@ -55,7 +55,7 @@ def listen_for_speech():
             stream.close()
             p.terminate()
             return stt_google_wav(filename)
-        
+
 def save_speech(data, p):
     filename = 'output_'+str(int(time.time()))
     # write data to WAVE file

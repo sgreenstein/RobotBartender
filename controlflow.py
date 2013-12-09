@@ -38,17 +38,18 @@ class ControlFlowHandler:
         speak = self._speak
         listen = self._listen
         drinks = self._drinks
-##        drinks = dict(drinks, _load_novel_drinks())
         lastdrink = '' #for altering the most recently-made drink
         speak("Hello, I am Bar2-D2. Tell me to make you a drink or give me feedback about previous drinks.")
         #keep receiving and processing commands until terminated
         while(True):
             try:
                 raw_input("Press enter to talk")
+##              #for typing instead of speaking
 ##                spoken = raw_input("Enter what you would have said:")
             except KeyboardInterrupt:
                 return
             speech = listen()
+##              #for typing instead of speaking
 ##            speech = [{'utterance': spoken}] #for testing without microphone
             if(not speech):
                 #no input
@@ -72,7 +73,6 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-##            if(True in shouldconfirm):
             if(True in shouldconfirm or not drink):
                 #user said no to confirmation
                 if(self._confirm(command, flavor, amount, drink, lastdrink)):
@@ -105,6 +105,8 @@ class ControlFlowHandler:
                         continue
                     drinks[drink].alter_recipe(flavor, float(amount))
             else: #command must be 'make'
+                if(flavor == 'good' or flavor == 'bad'):
+                    flavor = ''
                 if(drink):
                     #a drink is specified. make that drink
                     drinks[drink].make(flavor)
@@ -134,6 +136,7 @@ class ControlFlowHandler:
         speak = self._speak
         listen = self._listen
         assert command #no point in confirming if there is no command
+        #Tell the user what we think we should do, ask for confirmation
         if(command == 'make'):
             if(not drink):
                 drink = 'drink'
@@ -189,14 +192,6 @@ class ControlFlowHandler:
         while(selected_drink.level_of(flavor) == 0):
             selected_drink = drinks[choice(top)]
         return selected_drink
-
-    def _load_novel_drinks(self):
-        """loads the drinks that were previously created by conceptual blending
-        and saved to a file
-        """
-        pass
-        #TODO: open the novel drinks file, read it, return dictionary with
-        #keys drink names and values Drink objects
 
 def main():
     cfh = ControlFlowHandler()

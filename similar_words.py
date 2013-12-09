@@ -116,8 +116,6 @@ class SimilarWords:
         """
         bestsimilarity = 0
         secbestsim = 0
-##        avgsim = 0 #avg similarity
-##        avgbisim = 0 #avg bigram similarity
         #calculate each label's similarity with the interpeted text
         for label in self._instances:
             word_freqs = self._instances[label]
@@ -140,14 +138,11 @@ class SimilarWords:
                     if(bi_freqs[lastword + ' ' + word] / float(index + 1) > 0):
                         matched_bigrams += "\t" + lastword + ' ' + word + ' %.2f\n' % bi_freqs[lastword + ' ' + word]
                     lastword = word
-##            avgsim += similarity
-##            avgbisim += bisimilarity
             combinedsim = 10 * (similarity + bisimilarity * bigram_weight) / (1 + bigram_weight)
             if combinedsim >= bestsimilarity:
                 secbestsim = bestsimilarity
                 bestsimilarity = combinedsim
                 bestlabel = label
-##                print label, 'is the best so far.'
             print label, '\tUnigram score:\t%.2f' % similarity
             print label, '\tBigram score:\t%.2f' % bisimilarity
             if(matched_words):
@@ -156,9 +151,6 @@ class SimilarWords:
             if(matched_bigrams):
                 print "Matched bigrams:"
                 print matched_bigrams
-##        avgsim /= len(self._instances)
-##        avgbisim /= len(self._bigram_instances)
-##        print "Best sim:", bestsimilarity, "Avg sim:", avgsim
         print bestlabel, bestsimilarity, "2nd best:", secbestsim
         print ''
         if(bestlabel == 'none'):
