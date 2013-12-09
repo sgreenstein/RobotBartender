@@ -57,10 +57,9 @@ class SimilarWords:
             else:
                 word_freqs = Counter()
                 bi_freqs = Counter()
-            #if google only guessed one thing, copy that thing
-            if(not row[1]):
-                for i in range(1,5):
-                    row[i] = row[0]
+            #if google guess fewer than 5 things, copy the first thing
+            for i in range(len(row),5):
+                row.append(row[0])
             for index, phrase in enumerate(row):
                 last_word = ''
                 for word in phrase.split():

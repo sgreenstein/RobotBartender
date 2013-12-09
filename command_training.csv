@@ -822,14 +822,14 @@ alter,is great,great,Great,drink with great,is Great,is greater
 alter,set wrinkles awful,set wrinkles offal,set wrinkles on full,set wrinkels awful,set rinkles awful,set wrinkle awful
 alter,what was awful,what was offal,what was of offal,what was all offal,what was off offal,what was the offal
 alter,that was great,what was great,I was great,what was Great,that was Great,great
-alter,my last drink was great,my last drink with great,my last drink is great,my last drink with grey,my last drink with gray
-alter,I hated that,I hate that,I hate it that,I hate it back,I hated
+alter,my last drink was great,my last drink with great,my last drink is great,my last drink with grey,my last drink with gray,
+alter,I hated that,I hate that,I hate it that,I hate it back,I hated,
 alter,I hated my last drink,I hate my last drink,I hated my last rank,I hated my last rink,I hate my last rank,I hate it my last drink
 alter,I love my last drink,I love my last rank,I love my last rink,I love my last train,I love my left rink,I love my last drink it
-alter,I love my drink,I love my last drink,I love my drank,I love my strength,I love my ring
-alter,didn't like that,didn't like fat
+alter,I love my drink,I love my last drink,I love my drank,I love my strength,I love my ring,
+alter,didn't like that,didn't like fat,,,,
 alter,I didn't like that drink,I didn't like that drank,I didn't like that drinking,I didn't like that rink,I didn't like that drunk,I didn't like that- rink
-alter,I love that,I love bad,I love fat,I love back,I love dad
+alter,I love that,I love bad,I love fat,I love back,I love dad,
 alter,I like that drink,I like that drank,I like to drink,I like that rink,I like that drinks,I like that- rink
 alter,that wasn't very good,drink wasn't very good,drinking wasn't very good,wasn't very good,Patrick wasn't very good,drinks wasn't very good
 alter,my last drink wasn't very good,my last drink was a very good,my last drink was a very good year,my last drink wasn't very gud,my last drink wasn't very good year,my last drink wasn't very good for
@@ -839,24 +839,24 @@ alter,that drink was terrible,that drink with terrible,that drink with Terrible,
 alter,my last drink was terrible,my last drink with terrible,my last drink with Terrible,my last drink with terrible I,my last drink was Terrible,my last drink with a Terrible
 alter,drink tastes great,drink taste great,drink taste of grey,drink taste the Great,what rank is the Great,taste the Great
 alter,my last drink tastes great,my last drink taste great,my last drink taste the Great,my last drink taste of grey,my last drink taste of great,my last drink to taste the Great
-alter,drink tastes awful,drink taste awful,drink taste of pho
+alter,drink tastes awful,drink taste awful,drink taste of pho,,,
 alter,my last drink tastes awful,my last drink taste awful,my last drink taste of pho,my last drink taste of home,my last drink taste of 0,my last drink taste of a
 alter,my last drink taste good,my last drink tastes good,my last drink this together,my last drink tastes as good,my last drink taste as good,my last drink taste of good
-alter,the drink taste good,the drink tastes good,the drink taste so good,the drink tastes so good,the drink taste that good
+alter,the drink taste good,the drink tastes good,the drink taste so good,the drink tastes so good,the drink taste that good,
 alter,is the Terrible,is the terrible,terrible,the trick to Terrell,Terrell,is the Terrell
 alter,the taste of terrible,the taste the Terrible,the taste the terrible,the taste a terrible,taste the Terrible,what is the Terrible
-alter,set a pretty good,set a pretty good day,set a pretty good a,set a pretty good for,set a pretty good I
+alter,set a pretty good,set a pretty good day,set a pretty good a,set a pretty good for,set a pretty good I,
 alter,my drink taste of pretty good,my drink taste a pretty good,my drink taste good,my drink tastes good,my drink taste of pretty good for,my drink a pretty good
-alter,I didn't really like that,I didn't really like this,I didn't really like them,I didn't really like the
+alter,I didn't really like that,I didn't really like this,I didn't really like them,I didn't really like the,,
 alter,I didn't like the taste that drink,I didn't like the taste that trick,I didn't like the taste of ink,I didn't like the taste that drank,I didn't like the taste that drinking,I didn't like the taste of death drinking
-alter,I love the taste of ink,I love the taste that drink,I love the taste that drank,I love the taste of death drinking,I love the taste that drinks
-alter,I really like to drink,I really like that drink,I really like that drank,I really like that drinks,I really like that 3
+alter,I love the taste of ink,I love the taste that drink,I love the taste that drank,I love the taste of death drinking,I love the taste that drinks,
+alter,I really like to drink,I really like that drink,I really like that drank,I really like that drinks,I really like that 3,
 alter,Patrick sucked,Patrick sucks,Patrick suck,patrick sucking,the drink sucked,the drink suck
 alter,my last drink was really bad,my last drink with really bad,my last drink is really bad,my last drink was really Bad,my last drink with a really bad,my last drink was really bad I
 alter,the taste of awesome,the taste of Awesome,the taste of ink,the taste of India,taste of India,the taste of Italy
-alter,my last drink was awesome,my last drink with Awesome
+alter,my last drink was awesome,my last drink with Awesome,,,,
 alter,that was awful,what was awful,that was awesome,that was off,that was off of,that was office
-alter,that was bad,bad,is bad,sad,what was that
+alter,that was bad,bad,is bad,sad,what was that,
 alter,that wasn't very good,that was a very good,that was a very good year,what was America,that was America,that wasn't very good year
 alter,that doesn't taste good,that didn't tastes good,tastes good,did tastes good,that didnt tastes good,what doesn tastes good
 alter,my last drink was perfect,my last drink with perfect,my last drink with perfect ass,my last drink with Perfect,my last drink with perfect t***,my last drink was Perfect
@@ -864,10 +864,27 @@ alter,that was perfect,what was perfect,what was Perfect,that was Perfect,perfec
 make,make me a sweet Black Russian,make me a sweep Black Russian,make me a suite Black Russian,make me a sweet black Russians,make me a sweet black Russia,make me a sweet blackcrush
 make,make me a salary Cuba Libre,make me a salad Cuba Libre,make me a sandwich Cuba Libre,make make me a salary Cuba Libre,make me a sound Cuba Libre,make me a salaried Cuba Libre
 make,make me a salad Cuba Libre,make me a servant Cuba Libre,make me a sandwich Cuba Libre,make me a star Cuba Libre,make me a sound Cuba Libre,make me a salad Cuba Libre a
-make,I would like a Black Russian,I would like a black Russians,I would like a black Russia,I would like to a Black Russian
-make,give me a Black Russian,give me a black Russians,give me a black Russia
+make,I would like a Black Russian,I would like a black Russians,I would like a black Russia,I would like to a Black Russian,,
+make,give me a Black Russian,give me a black Russians,give me a black Russia,,,
 make,I like a White Russian,I would like a White Russian,I like a white russian,Michael White Russians,I would like a white russian,I like a White Russians
-make,I would like a Black Russian,I would like a black Russia,I would like a black Russians,I would like to a Black Russian
+make,I would like a Black Russian,I would like a black Russia,I would like a black Russians,I would like to a Black Russian,,
 make,make me a Black Russian,make me a black Russia,make me a black Russians,make me a black crush,make me about crushes,make me about crush
-make,I would like a White Russian,I would like a white Russia,I would like a white russian,I would like a White Russians
-make,give me a White Russian,give me a white Russia,give me a white russian,give me a White Russians
+make,I would like a White Russian,I would like a white Russia,I would like a white russian,I would like a White Russians,,
+make,give me a White Russian,give me a white Russia,give me a white russian,give me a White Russians,,
+alter,that wasn't Sweden,that was in Sweden,that wasn't sweetener,that wasn't sweeter,that wasn't sweet,that wasn Sweden
+alter,that was too sweet,that was 23,that was too sweetie,that was too suite,that was 2 suite,that was to suite
+alter,that wasn't strong enough,that wasn't stronger,that wasn strong enough,that wasn stronger,strong enough,that was instrumental
+alter,that was too strong,what was too strong,2 stroke,72 Strong,two stroke,that was too Strong
+alter,that was a veteran,that wasn't,that wasn't Federal,that wasn't Miranda,that wasn Federal,that was
+alter,that was too bitter,that was to better,that was 2 better,that was too better,what was 2 better,does 2 better
+alter,that wasn't sour,that wasn't sourdough,that wasn sour,that wasn't Sauer,that wasn't Sour,that wasn sourdough
+alter,that was too sour,that was to sour,that was too Sauer,that was too Sour,that was to Sour,that was too sower
+alter,that was a vigina,that was a video,that was a Vizio,that was a busy enough,that wasn't for the NFL,that wasn't a vigina
+alter,that was too busy,that was too fizzy,that was 250,what was 250,is 250,that was to fizzy
+alter,Premium,premium,that was a criminal,Premium rush,that wasn't cream,that wasn't Premium
+alter,that was too creamy,that was too cream,that was to creamy,that was to cream,that was too Kreme,that was too Cream
+alter,that wasn't sour,that wasn't Sauer,that wasn't Sour,that wasn't sourdough,that wasn sour,that wasn't Sauron
+alter,that was too sour,that was to sour,that was too Sauer,that was too Sour,that was to Sour,that was too sower
+alter,that wasn't sour,that wasn't Sauer,that wasn't Sour,that wasn't hours,that wasn't hour,that wasn t sour
+alter,that was too sour,,,,,
+make,make me a Black Russian,make me a Black Russian flag,make me a black Russians,make me a Black Russian terrier,make me a Black Russian play,making a Black Russian

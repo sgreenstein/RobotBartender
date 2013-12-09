@@ -18,14 +18,15 @@ import time
 def main():
 ##    train_for(['alter', 'Rum and Coke', 'alcoholic'], ['command_training.csv', 'drink_training.csv', 'flavor_training.csv'])
     #make me a <drink>
-    train_many('make', drinks = create_presets.getdrinks())
+##    train_many('make', drinks = create_presets.getdrinks())
     #make me a <flavor> drink
 ##    train_many('make', flavors = Ingredient.flavorlist())
     #make me a <flavor> <drink>
-##    train_many('make', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
+    train_many('make', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
 ##    train_many('make', drinks = ['Cuba Libre'], flavors = ['sour'])
     #that drink was too <flavor>
 ##    train_many('alter', flavors = Ingredient.flavorlist())
+##    train_many('alter', flavors = ['sour'])
     #that <drink> was too <flavor>
 ##    train_many('alter', drinks = create_presets.getdrinks(), flavors = Ingredient.flavorlist())
     #that drink was <bad/good>

@@ -74,22 +74,22 @@ class Ingredient:
         return 0
 
     def alcohol(self):
-        return self.getFlavor("alcoholic")
+        return self.flavorvalue("alcoholic")
 
     def sweetness(self):
-        return self.getFlavor("sweet")
+        return self.flavorvalue("sweet")
 
     def bitterness(self):
-        return self.getFlavor("bitter")
+        return self.flavorvalue("bitter")
 
     def sourness(self):
-        return self.getFlavor("sour")
+        return self.flavorvalue("sour")
 
     def flavor_strength(self):
-        return self.getFlavor("flavor_strength")
+        return self.flavorvalue("flavor_strength")
 
     def carbonation(self):
-        return self.getFlavor("carbonated")
+        return self.flavorvalue("carbonated")
 
     def creaminess(self):
-        return self.getFlavor("creamy")
+        return self.flavorvalue("creamy")
