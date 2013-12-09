@@ -111,8 +111,8 @@ class SimilarWords:
         hypotheses -- result from Google stt to classify
         threshold -- similarity threshold necessary to return a label (default 0.1)
         confirm_cushion -- will need confirmation if best similarity is not this many
-            times higher than the second best similarity (default 2)
-        bigram_weight -- relative to unigrams, how much bigrams should matter (default 0.5)
+            times higher than the second best similarity (default 0.5)
+        bigram_weight -- relative to unigrams, how much bigrams should matter (default 1.5)
         """
         bestsimilarity = 0
         secbestsim = 0

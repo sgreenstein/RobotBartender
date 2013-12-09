@@ -67,8 +67,8 @@ class ControlFlowHandler:
                 #there must be a command
                 speak("I didn't understand that.")
                 continue
-            if(True in shouldconfirm):
-##            if(True in shouldconfirm or not drink):
+##            if(True in shouldconfirm):
+            if(True in shouldconfirm or not drink):
                 #user said no to confirmation
                 if(self._confirm(command, flavor, amount, drink, lastdrink)):
                     print "Confirmed."
