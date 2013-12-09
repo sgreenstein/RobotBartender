@@ -1,4 +1,4 @@
-import tts
+from tts import speak
 from ingredient import Ingredient
 
 class Drink:
@@ -52,7 +52,7 @@ class Drink:
         #add each ingredient
         for ingredient, ingred_amount in ingredients.iteritems():
             ingredient.add(int((size * ingred_amount) / self.total_parts))
-        print "Your", self.name, "is ready."
+        speak("Your " + self.name + " is ready.");
 
     def _calcflavorlevels(self):
         """Calculates the drink's value for each flavor
@@ -84,7 +84,7 @@ class Drink:
             changing = "more"
         else:
             changing = "less"
-        print "Making the", self.name, changing, flavor
+        speak("Making the" + " " + self.name + " " + changing + " " + flavor);
         for ingredient in ingredients:
             #increase ingredients that are above the average strength, decrease others
             #all in proportion to how far they are from the average
@@ -103,7 +103,7 @@ class Drink:
             article = 'an'
         else:
             article = 'a'
-        tts.speak("There are no " + flavor + " ingredients in " + article + ' ' + self.name)
+        speak("There are no " + flavor + " ingredients in " + article + ' ' + self.name)
 
     def level_of(self, flavor):
         """Returns the level of the specified flavor in this drink

@@ -147,24 +147,26 @@ class SimilarWords:
                 secbestsim = bestsimilarity
                 bestsimilarity = combinedsim
                 bestlabel = label
-                print label, 'is the best-----------------------------------'
-            print label, '\t%.2f' % similarity
-            print label, '\t%.2f' % bisimilarity
+##                print label, 'is the best so far.'
+            print label, '\tUnigram score:\t%.2f' % similarity
+            print label, '\tBigram score:\t%.2f' % bisimilarity
             if(matched_words):
+                print "Matched unigrams:"
                 print matched_words
             if(matched_bigrams):
+                print "Matched bigrams:"
                 print matched_bigrams
 ##        avgsim /= len(self._instances)
 ##        avgbisim /= len(self._bigram_instances)
-        print ''
 ##        print "Best sim:", bestsimilarity, "Avg sim:", avgsim
-        print "Best sim:", bestsimilarity, "2nd best sim:", secbestsim
+        print bestlabel, bestsimilarity, "2nd best:", secbestsim
+        print ''
         if(bestlabel == 'none'):
             #matched to special 'none' label
             return '', False
         elif(bestsimilarity >= threshold):
             #if bestsim isn't enough higher than the average sim, should confirm
-            should_confirm = (bestsimilarity < secbestsim * confirm_cushion)
+            should_confirm = (bestsimilarity < max(secbestsim, threshold) * confirm_cushion)
             return bestlabel, should_confirm
         else:
             #nothing matched with sufficient confidence

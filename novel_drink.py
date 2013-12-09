@@ -92,7 +92,8 @@ class NovelDrink:
                     else:
                         part = new_drink_ings[ingr]
                         new_drink_ings_final[ingr] = part
-                new_drink = Drink("custom_drink",new_drink_ings_final)
+                new_drink_name = "Drink " + randint(1,999);
+                new_drink = Drink(new_drink_name,new_drink_ings_final)
                 while alcohol==0:
                     ingr = choice(new_drink_ings.keys())
                     part = new_drink_ings[ingr]

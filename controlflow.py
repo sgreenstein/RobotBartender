@@ -40,7 +40,7 @@ class ControlFlowHandler:
         drinks = self._drinks
 ##        drinks = dict(drinks, _load_novel_drinks())
         lastdrink = '' #for altering the most recently-made drink
-
+        speak("Hello, I am Bar2-D2. Tell me to make you a drink or give me feedback about previous drinks.")
         #keep receiving and processing commands until terminated
         while(True):
             try:
@@ -56,9 +56,14 @@ class ControlFlowHandler:
                 continue
             shouldconfirm = [False, False, False, False] #true if unsure
             #recognize speech
+            separator = '-----------------------------------------------------'
+            print "Determining the command.", separator
             command, shouldconfirm[0] = self._commandsim.classify(speech)
+            print "Determining the drink.", separator
             drink, shouldconfirm[1] = self._drinksim.classify(speech, threshold = 0.4)
+            print "Determining the flavor.", separator
             flavor, shouldconfirm[2] = self._flavorsim.classify(speech, threshold = 0.01)
+            print "Determining the amount.", separator
             amount, shouldconfirm[3] = self._amountsim.classify(speech)
 
             #perform checks
@@ -112,10 +117,10 @@ class ControlFlowHandler:
                     else:
                         #no drink or flavor specified. Make something new!
                         print "Making new drink:"
-                        self._novel_drinks.makenovel() #TODO: change this method call
-##                        drinks[newdrink.name] = newdrink
-##                        newdrink.make()
-##                        lastdrink = newdrink.name
+                        newdrink = self._novel_drinks.makenovel()
+                        drinks[newdrink.name] = newdrink
+                        newdrink.make()
+                        lastdrink = newdrink.name
 
     def _confirm(self, command, flavor, amount, drink, lastdrink):
         """Asks the user to confirm a guessed action
